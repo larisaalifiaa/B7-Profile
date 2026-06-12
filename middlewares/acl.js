@@ -30,8 +30,8 @@ const checkPermission = (requiredPermissions) => {
         SELECT DISTINCT p.name 
         FROM permissions p
         JOIN role_has_permissions rhp ON p.id = rhp.permission_id
-        JOIN user_has_roles uhr ON rhp.role_id = uhr.role_id
-        WHERE uhr.user_id = ? AND p.name IN (?)
+        JOIN model_has_roles mhr ON rhp.role_id = mhr.role_id
+        WHERE mhr.model_id = ? AND p.name IN (?)
       `;
 
       const [rows] = await db.query(query, [req.session.userId, permissionsArray]);
