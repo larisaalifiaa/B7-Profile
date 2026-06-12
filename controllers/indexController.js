@@ -2,11 +2,11 @@ const bcrypt = require("bcryptjs");
 const db = require("../lib/db");
 
 const index = (req, res) => {
-  res.render("index", { title: "Express" });
+  res.redirect("/home");
 };
 
 const home = (req, res) => {
-  res.render("home", { title: "Home", user: req.session.username });
+  res.render("home", { title: "Home" });
 };
 
 const loginPage = (req, res) => {
@@ -20,7 +20,7 @@ const login = async (req, res, next) => {
   const { username, password } = req.body;
 
   try {
-    const [rows] = await db.query("SELECT * FROM users WHERE username = ?", [
+    const [rows] = await db.query("SELECT * FROM users WHERE email = ?", [
       username,
     ]);
 
@@ -43,7 +43,7 @@ const login = async (req, res, next) => {
 
     // Set session
     req.session.userId = user.id;
-    req.session.username = user.username;
+    req.session.username = user.name;
 
     res.redirect("/home");
   } catch (err) {
