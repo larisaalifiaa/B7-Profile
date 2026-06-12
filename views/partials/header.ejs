@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <script>
+      (() => {
+        try {
+          const stored = localStorage.getItem("themeMode");
+          if (
+            stored
+              ? stored === "dark"
+              : matchMedia("(prefers-color-scheme: dark)").matches
+          ) {
+            document.documentElement.classList.add("dark");
+          }
+        } catch (_) {}
+
+        const apply = (dark) => {
+          document.documentElement.classList.toggle("dark", dark);
+          try {
+            localStorage.setItem("themeMode", dark ? "dark" : "light");
+          } catch (_) {}
+        };
+
+        document.addEventListener("basecoat:theme", (event) => {
+          const mode = event.detail?.mode;
+          apply(
+            mode === "dark"
+              ? true
+              : mode === "light"
+                ? false
+                : !document.documentElement.classList.contains("dark"),
+          );
+        });
+      })();
+    </script>
+
+    <script>
+      (function () {
+        try {
+          const storedTheme = localStorage.getItem("themeVariant");
+          if (storedTheme)
+            document.documentElement.classList.add(`theme-${storedTheme}`);
+        } catch (event) {
+          console.error(
+            "Could not apply theme variant from localStorage",
+            event,
+          );
+        }
+      })();
+    </script>
+
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Language" content="en" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title><%= typeof title !== 'undefined' ? title : 'Facultyware' %></title>
+    <meta
+      name="description"
+      content="Facultyware Management Platform"
+    />
+    <meta name="title" content="Facultyware" />
+
+    <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg" />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="/assets/apple-touch-icon.png"
+    />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/styles.css" />
+    <link rel="stylesheet" href="/stylesheets/style.css" />
+
+    <script src="https://unpkg.com/htmx.org@2.0.4"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/django.min.js"></script>
+    <script>
+      const highlight = () => {
+        if (!window.hljs) return;
+        document
+          .querySelectorAll(
+            "pre code:not([data-highlighted]), code.highlight:not([data-highlighted])",
+          )
+          .forEach((el) => hljs.highlightElement(el));
+      };
+
+      if (!window._hljsInit) {
+        window._hljsInit = true;
+        document.addEventListener("DOMContentLoaded", highlight);
+        document.addEventListener("htmx:afterSwap", highlight);
+      }
+    </script>
+    <script>
+      document.addEventListener("htmx:historyRestore", () => {
+        if (window.basecoat) window.basecoat.initAll();
+      });
+    </script>
+  </head>
+  <body class="bg-background *:data-[slot=card]:has-[[data-slot=chart]]:shadow-none">
