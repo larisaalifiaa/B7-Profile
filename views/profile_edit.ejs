@@ -1,0 +1,325 @@
+<%- include('partials/header') %>
+<%- include('partials/sidebar') %>
+<main id="content">
+  <%- include('partials/navbar') %>
+
+  <div class="container mx-auto p-6 md:p-10 space-y-6">
+    <!-- Breadcrumbs & Heading -->
+    <div class="flex flex-col gap-1">
+      <div class="flex items-center gap-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+        <a href="/home" class="hover:text-foreground transition-colors" hx-boost="true" hx-select="#content" hx-target="#content" hx-swap="outerHTML">Dashboard</a>
+        <svg xmlns="http://www.w3.org/2000/svg" class="size-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+        <a href="/profile" class="hover:text-foreground transition-colors" hx-boost="true" hx-select="#content" hx-target="#content" hx-swap="outerHTML">Profil</a>
+        <svg xmlns="http://www.w3.org/2000/svg" class="size-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+        <span class="text-primary">Edit Profil</span>
+      </div>
+      <h1 class="text-3xl font-extrabold tracking-tight text-foreground mt-1">Edit Profil</h1>
+    </div>
+
+    <!-- Alerts -->
+    <% if (error) { %>
+      <div class="alert-error flex items-center gap-3 text-sm font-medium animate-slide-up">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+        <%= error %>
+      </div>
+    <% } %>
+    <% if (success) { %>
+      <div class="alert-success flex items-center gap-3 text-sm font-semibold animate-slide-up">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        <%= success %>
+      </div>
+    <% } %>
+
+    <form action="/profile/edit" method="POST" enctype="multipart/form-data" id="edit-profile-form" class="max-w-3xl mx-auto space-y-6">
+      
+      <!-- 1. Foto Profil Card -->
+      <div class="glass-card rounded-2xl overflow-hidden animate-slide-up">
+        <div class="p-5 border-b border-muted/30 flex items-center gap-3">
+          <div class="stat-icon" style="width:32px;height:32px;border-radius:8px;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+          </div>
+          <h2 class="text-base font-bold text-foreground">Foto Profil</h2>
+        </div>
+        <div class="p-6">
+          <div class="flex flex-col md:flex-row items-center gap-6">
+            <!-- Current Photo Preview -->
+            <div class="relative group flex-shrink-0">
+              <div class="absolute -inset-1.5 rounded-2xl bg-gradient-to-tr from-blue-500 to-violet-500 opacity-15 blur-sm group-hover:opacity-25 transition-opacity"></div>
+              <img
+                src="<%= employee.photo ? '/uploads/' + employee.photo : '/assets/images/placeholder.svg' %>"
+                class="relative rounded-2xl avatar-profile-edit border-2 border-background bg-card shadow-lg"
+                id="avatar-preview"
+                alt="Preview"
+              />
+            </div>
+
+            <!-- Upload Drop Zone -->
+            <div class="flex-1 w-full">
+              <div class="upload-zone" id="upload-zone" onclick="document.getElementById('photo-input').click()">
+                <div class="upload-icon mx-auto">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                </div>
+                <p class="text-sm font-semibold text-foreground" id="upload-label">Klik atau seret foto ke sini</p>
+                <p class="text-xs text-muted-foreground mt-1">PNG, JPG, JPEG — Maks. 2MB</p>
+              </div>
+              <input 
+                type="file" 
+                id="photo-input" 
+                name="photo" 
+                accept="image/png, image/jpeg, image/jpg" 
+                class="sr-only"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. Card Informasi Pribadi -->
+      <div class="glass-card rounded-2xl overflow-hidden animate-slide-up animate-slide-up-1">
+        <div class="p-5 border-b border-muted/30 flex items-center gap-3">
+          <div class="stat-icon" style="width:32px;height:32px;border-radius:8px;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          <h2 class="text-base font-bold text-foreground">Informasi Pribadi</h2>
+        </div>
+        <div class="p-6 md:p-8">
+          <div class="grid gap-6 md:gap-x-8 md:gap-y-6 md:grid-cols-2">
+            <div class="space-y-2.5 flex flex-col">
+              <label for="name" class="text-xs font-bold text-muted-foreground uppercase tracking-wider">Nama Lengkap</label>
+              <input type="text" id="name" name="name" class="input-premium" value="<%= employee.name %>" required />
+            </div>
+            <div class="space-y-2.5 flex flex-col">
+              <label for="national_id_number" class="text-xs font-bold text-muted-foreground uppercase tracking-wider">NIK (Kependudukan)</label>
+              <input type="text" id="national_id_number" name="national_id_number" maxlength="16" pattern="\d{16}" title="Harus berupa 16 digit angka" class="input-premium" value="<%= employee.national_id_number || '' %>" required />
+            </div>
+            <div class="space-y-2.5 flex flex-col">
+              <label for="tax_id_number" class="text-xs font-bold text-muted-foreground uppercase tracking-wider">NPWP</label>
+              <input type="text" id="tax_id_number" name="tax_id_number" class="input-premium" value="<%= employee.tax_id_number || '' %>" placeholder="xx.xxx.xxx.x-xxx.xxx" />
+            </div>
+            <div class="space-y-2.5 flex flex-col">
+              <label for="phone_number" class="text-xs font-bold text-muted-foreground uppercase tracking-wider">Nomor Telepon</label>
+              <input type="tel" id="phone_number" name="phone_number" pattern="\d{9,15}" title="Harus berupa 9 hingga 15 digit angka" class="input-premium" value="<%= employee.phone_number || '' %>" />
+            </div>
+            <div class="space-y-2.5 flex flex-col">
+              <label for="birth_place" class="text-xs font-bold text-muted-foreground uppercase tracking-wider">Tempat Lahir</label>
+              <input type="text" id="birth_place" name="birth_place" class="input-premium" value="<%= employee.birth_place %>" required />
+            </div>
+            <div class="space-y-2.5 flex flex-col">
+              <label for="birth_date" class="text-xs font-bold text-muted-foreground uppercase tracking-wider">Tanggal Lahir</label>
+              <input type="date" id="birth_date" name="birth_date" class="input-premium" value="<%= formatDate(employee.birth_date) %>" required />
+            </div>
+            <div class="space-y-2.5 flex flex-col">
+              <label for="gender" class="text-xs font-bold text-muted-foreground uppercase tracking-wider">Jenis Kelamin</label>
+              <select id="gender" name="gender" class="input-premium select w-full" required>
+                <option value="male" <%= employee.gender === 'male' ? 'selected' : '' %>>Laki-laki</option>
+                <option value="female" <%= employee.gender === 'female' ? 'selected' : '' %>>Perempuan</option>
+              </select>
+            </div>
+            <div class="space-y-2.5 flex flex-col">
+              <label for="religion" class="text-xs font-bold text-muted-foreground uppercase tracking-wider">Agama</label>
+              <input type="text" id="religion" name="religion" class="input-premium" value="<%= employee.religion || '' %>" />
+            </div>
+            <div class="space-y-2.5 flex flex-col">
+              <label for="marital_status" class="text-xs font-bold text-muted-foreground uppercase tracking-wider">Status Pernikahan</label>
+              <select id="marital_status" name="marital_status" class="input-premium select w-full" required>
+                <option value="single" <%= employee.marital_status === 'single' ? 'selected' : '' %>>Belum Menikah</option>
+                <option value="married" <%= employee.marital_status === 'married' ? 'selected' : '' %>>Menikah</option>
+                <option value="divorced" <%= employee.marital_status === 'divorced' ? 'selected' : '' %>>Cerai</option>
+              </select>
+            </div>
+            <div class="space-y-2.5 flex flex-col md:col-span-2">
+              <label for="address" class="text-xs font-bold text-muted-foreground uppercase tracking-wider">Alamat Lengkap</label>
+              <textarea id="address" name="address" rows="3" class="input-premium w-full" required><%= employee.address %></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. Card Informasi Kepegawaian (Read-only) -->
+      <div class="glass-card rounded-2xl overflow-hidden animate-slide-up animate-slide-up-2">
+        <div class="p-5 border-b border-muted/30 flex items-center gap-3">
+          <div class="stat-icon" style="width:32px;height:32px;border-radius:8px;background:rgba(16,185,129,0.08);color:#10b981;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/><rect width="20" height="14" x="2" y="6" rx="2"/></svg>
+          </div>
+          <div>
+            <h2 class="text-base font-bold text-foreground">Informasi Kepegawaian</h2>
+            <p class="text-xs text-muted-foreground">Data ini hanya bisa diubah oleh Admin</p>
+          </div>
+        </div>
+        <div class="p-6 md:p-8 grid gap-5 md:grid-cols-2">
+          <div class="space-y-1.5 flex flex-col">
+            <label class="text-xs font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
+              <svg xmlns="http://www.w3.org/2000/svg" class="size-3" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" /></svg>
+              Email
+            </label>
+            <input type="email" class="input-premium opacity-60 cursor-not-allowed" value="<%= employee.email %>" disabled />
+          </div>
+          <div class="space-y-1.5 flex flex-col">
+            <label class="text-xs font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
+              <svg xmlns="http://www.w3.org/2000/svg" class="size-3" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" /></svg>
+              NIP
+            </label>
+            <input type="text" class="input-premium opacity-60 cursor-not-allowed font-mono" value="<%= employee.employee_number || '-' %>" disabled />
+          </div>
+          <div class="space-y-1.5 flex flex-col">
+            <label class="text-xs font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
+              <svg xmlns="http://www.w3.org/2000/svg" class="size-3" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" /></svg>
+              Divisi / Unit Kerja
+            </label>
+            <input type="text" class="input-premium opacity-60 cursor-not-allowed" value="<%= employee.org_unit_name || '-' %>" disabled />
+          </div>
+          <div class="space-y-1.5 flex flex-col">
+            <label class="text-xs font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
+              <svg xmlns="http://www.w3.org/2000/svg" class="size-3" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" /></svg>
+              Status Kepegawaian
+            </label>
+            <input type="text" class="input-premium opacity-60 cursor-not-allowed" value="<%= employee.emp_status_name || '-' %>" disabled />
+          </div>
+          <div class="space-y-1.5 flex flex-col">
+            <label class="text-xs font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
+              <svg xmlns="http://www.w3.org/2000/svg" class="size-3" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" /></svg>
+              Tanggal Bergabung
+            </label>
+            <input type="text" class="input-premium opacity-60 cursor-not-allowed" value="<%= formatDate(employee.hire_date) %>" disabled />
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex justify-end gap-3 pt-2">
+        <a href="/profile" class="btn border" data-variant="outline" style="border-radius: 10px;" hx-boost="true" hx-select="#content" hx-target="#content" hx-swap="outerHTML">Batal</a>
+        <button type="submit" class="btn text-white" data-variant="default" style="border-radius: 10px;" id="btn-submit">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="mr-2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+          Simpan Perubahan
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    // Toast notification helper
+    function showToast(title, message, category = 'error') {
+      document.dispatchEvent(new CustomEvent('basecoat:toast', {
+        detail: {
+          config: {
+            category: category,
+            title: title,
+            description: message,
+            duration: 4000
+          }
+        }
+      }));
+    }
+
+    // Photo upload preview + drag-and-drop
+    (() => {
+      const input = document.getElementById('photo-input');
+      const zone = document.getElementById('upload-zone');
+      const preview = document.getElementById('avatar-preview');
+      const label = document.getElementById('upload-label');
+
+      if (!input || !zone) return;
+
+      function handleFile(file) {
+        if (!file) return;
+        if (file.size > 2 * 1024 * 1024) {
+          showToast("Berkas Terlalu Besar", "Maksimal ukuran berkas adalah 2MB.", "error");
+          input.value = "";
+          return;
+        }
+        if (!['image/jpeg', 'image/jpg', 'image/png'].includes(file.type)) {
+          showToast("Format Tidak Didukung", "Format berkas tidak diizinkan! Hanya format .jpg, .jpeg, dan .png.", "error");
+          input.value = "";
+          return;
+        }
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          preview.src = e.target.result;
+          if (label) label.textContent = file.name;
+          zone.style.borderColor = 'hsl(var(--primary))';
+          zone.style.background = 'hsl(var(--primary) / 0.04)';
+        };
+        reader.readAsDataURL(file);
+      }
+
+      input.addEventListener('change', () => {
+        if (input.files && input.files[0]) handleFile(input.files[0]);
+      });
+
+      // Drag & drop
+      zone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        zone.classList.add('dragover');
+      });
+      zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
+      zone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        zone.classList.remove('dragover');
+        if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+          const dt = new DataTransfer();
+          dt.items.add(e.dataTransfer.files[0]);
+          input.files = dt.files;
+          handleFile(e.dataTransfer.files[0]);
+        }
+      });
+    })();
+
+    // Client-side Form Validation
+    (() => {
+      const form = document.getElementById('edit-profile-form');
+      if (!form) return;
+
+      form.addEventListener('submit', (e) => {
+        const nameVal = document.getElementById('name').value.trim();
+        const nikVal = document.getElementById('national_id_number').value.trim();
+        const phoneVal = document.getElementById('phone_number').value.trim();
+        const birthDateVal = document.getElementById('birth_date').value;
+        const addressVal = document.getElementById('address').value.trim();
+
+        if (!nameVal) {
+          e.preventDefault();
+          showToast("Validasi Gagal", "Nama lengkap wajib diisi.", "error");
+          return;
+        }
+
+        if (!nikVal || !/^\d{16}$/.test(nikVal)) {
+          e.preventDefault();
+          showToast("Validasi Gagal", "NIK wajib berupa 16 digit angka.", "error");
+          return;
+        }
+
+        if (phoneVal && !/^\d{9,15}$/.test(phoneVal)) {
+          e.preventDefault();
+          showToast("Validasi Gagal", "Nomor telepon wajib berupa 9 hingga 15 digit angka.", "error");
+          return;
+        }
+
+        if (!birthDateVal) {
+          e.preventDefault();
+          showToast("Validasi Gagal", "Tanggal lahir wajib diisi.", "error");
+          return;
+        }
+
+        const birthDate = new Date(birthDateVal);
+        if (isNaN(birthDate.getTime())) {
+          e.preventDefault();
+          showToast("Validasi Gagal", "Tanggal lahir tidak valid.", "error");
+          return;
+        }
+
+        if (birthDate > new Date()) {
+          e.preventDefault();
+          showToast("Validasi Gagal", "Tanggal lahir tidak boleh di masa depan.", "error");
+          return;
+        }
+
+        if (!addressVal) {
+          e.preventDefault();
+          showToast("Validasi Gagal", "Alamat wajib diisi.", "error");
+          return;
+        }
+      });
+    })();
+  </script>
+</main>
+<%- include('partials/footer') %>
