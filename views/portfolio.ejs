@@ -1,0 +1,607 @@
+<%- include('partials/header') %>
+<%- include('partials/sidebar') %>
+<main id="content">
+  <%- include('partials/navbar') %>
+
+  <style>
+    .active-tab-btn {
+      background: linear-gradient(135deg, #2563eb, #3b82f6) !important;
+      color: #fff !important;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+    }
+  </style>
+
+  <div class="container mx-auto p-6 md:p-10 space-y-6" id="portfolio-container">
+    <!-- Breadcrumbs & Heading with Buttons -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div class="flex flex-col gap-1">
+        <div class="flex items-center gap-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+          <a href="/home" class="hover:text-foreground transition-colors" hx-boost="true" hx-select="#content" hx-target="#content" hx-swap="outerHTML">Dashboard</a>
+          <svg xmlns="http://www.w3.org/2000/svg" class="size-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+          <span class="text-primary">Portfolio</span>
+        </div>
+        <h1 class="text-3xl font-extrabold tracking-tight text-foreground mt-1">Portfolio</h1>
+      </div>
+      
+      <div class="flex flex-wrap gap-3">
+        <a href="/portfolio/pdf" class="btn shrink-0" data-variant="default" style="border-radius: 8px;">
+          <svg xmlns="http://www.w3.org/2000/svg" class="size-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+          Export PDF
+        </a>
+      </div>
+    </div>
+
+    <!-- Data Pegawai Card -->
+    <div class="glass-card rounded-2xl p-6 md:p-8">
+      <h2 class="text-xl font-bold text-foreground mb-4 border-b pb-2">Data Pegawai</h2>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm border-collapse">
+          <tbody>
+            <tr class="border-b border-muted/30">
+              <td class="py-2.5 font-semibold text-muted-foreground w-1/3 md:w-1/4">Nama</td>
+              <td class="py-2.5 px-2 text-muted-foreground w-4 text-center">:</td>
+              <td class="py-2.5 text-foreground font-bold"><%= employee.name %></td>
+            </tr>
+            <tr class="border-b border-muted/30">
+              <td class="py-2.5 font-semibold text-muted-foreground">NIP</td>
+              <td class="py-2.5 px-2 text-muted-foreground text-center">:</td>
+              <td class="py-2.5 text-foreground font-bold"><%= employee.employee_number || '-' %></td>
+            </tr>
+            <tr class="border-b border-muted/30">
+              <td class="py-2.5 font-semibold text-muted-foreground">Divisi / Unit Kerja</td>
+              <td class="py-2.5 px-2 text-muted-foreground text-center">:</td>
+              <td class="py-2.5 text-foreground"><%= employee.org_unit_name || '-' %></td>
+            </tr>
+            <tr class="border-b border-muted/30">
+              <td class="py-2.5 font-semibold text-muted-foreground">Status Pegawai</td>
+              <td class="py-2.5 px-2 text-muted-foreground text-center">:</td>
+              <td class="py-2.5 text-foreground">
+                <span class="inline-flex items-center rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-xs font-semibold text-emerald-600 dark:text-emerald-500 border border-emerald-500/20">
+                  <%= employee.emp_status_name || '-' %> (<%= employee.status %>)
+                </span>
+              </td>
+            </tr>
+            <tr class="border-b border-muted/30">
+              <td class="py-2.5 font-semibold text-muted-foreground">Tanggal Bergabung</td>
+              <td class="py-2.5 px-2 text-muted-foreground text-center">:</td>
+              <td class="py-2.5 text-foreground"><%= formatDate(employee.hire_date) %></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Portfolio Tabbed System -->
+    <div class="glass-card rounded-2xl overflow-hidden">
+      <!-- Tabs Headers -->
+      <div class="border-b bg-muted/30 p-4">
+        <nav class="flex flex-wrap gap-2" aria-label="Tabs" id="portfolio-tabs">
+          <button onclick="switchTab('tab-education')" id="btn-tab-education" class="btn-sm shrink-0 active-tab-btn" style="border-radius: 6px;" data-variant="default">Riwayat Pendidikan</button>
+          <button onclick="switchTab('tab-research')" id="btn-tab-research" class="btn-sm shrink-0" style="border-radius: 6px;" data-variant="ghost">Penelitian & Riset</button>
+          <button onclick="switchTab('tab-publications')" id="btn-tab-publications" class="btn-sm shrink-0" style="border-radius: 6px;" data-variant="ghost">Publikasi Ilmiah</button>
+          <button onclick="switchTab('tab-services')" id="btn-tab-services" class="btn-sm shrink-0" style="border-radius: 6px;" data-variant="ghost">Pengabdian Masyarakat</button>
+          <button onclick="switchTab('tab-committees')" id="btn-tab-committees" class="btn-sm shrink-0" style="border-radius: 6px;" data-variant="ghost">Kepanitiaan</button>
+          <button onclick="switchTab('tab-assignments')" id="btn-tab-assignments" class="btn-sm shrink-0" style="border-radius: 6px;" data-variant="ghost">Riwayat Penugasan</button>
+        </nav>
+      </div>
+
+      <!-- Tab Content Area -->
+      <div class="p-6 md:p-8">
+        <!-- 1. Pendidikan -->
+        <div id="tab-education" class="tab-pane space-y-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-2">
+            <h2 class="text-xl font-bold text-foreground">Riwayat Pendidikan</h2>
+            <input
+              type="text"
+              placeholder="Cari pendidikan..."
+              class="input-premium w-64 text-sm"
+              onkeyup="searchTable('edu-table', this.value)"
+            />
+          </div>
+          <% if (eduHistory.length === 0) { %>
+            <div class="text-center py-12 text-muted-foreground">Belum ada data riwayat pendidikan.</div>
+          <% } else { %>
+            <div class="overflow-x-auto rounded-xl border border-muted/50">
+              <table class="w-full text-sm border-collapse" id="edu-table">
+                <thead class="bg-muted/50 border-b border-muted/50">
+                  <tr>
+                    <th class="py-3 px-4 font-semibold text-muted-foreground border-r border-muted/50 w-12 text-center">No</th>
+                    <th class="py-3 px-4 font-semibold text-muted-foreground border-r border-muted/50 text-left">Jenjang</th>
+                    <th class="py-3 px-4 font-semibold text-muted-foreground border-r border-muted/50 text-left">Institusi</th>
+                    <th class="py-3 px-4 font-semibold text-muted-foreground border-r border-muted/50 text-left">Jurusan</th>
+                    <th class="py-3 px-4 font-semibold text-muted-foreground border-r border-muted/50 text-center">Tahun Masuk</th>
+                    <th class="py-3 px-4 font-semibold text-muted-foreground border-r border-muted/50 text-center">Tahun Lulus</th>
+                    <th class="py-3 px-4 font-semibold text-muted-foreground text-center">IPK</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% eduHistory.forEach((edu, idx) => { %>
+                    <tr class="border-b border-muted/30 last:border-0 hover:bg-muted/10 transition-colors">
+                      <td class="py-3 px-4 border-r border-muted/30 text-center text-muted-foreground"><%= idx + 1 %></td>
+                      <td class="py-3 px-4 border-r border-muted/30 font-bold text-foreground"><%= edu.degree %></td>
+                      <td class="py-3 px-4 border-r border-muted/30 text-foreground font-medium"><%= edu.institution %></td>
+                      <td class="py-3 px-4 border-r border-muted/30 text-muted-foreground"><%= edu.major || '-' %></td>
+                      <td class="py-3 px-4 border-r border-muted/30 text-center text-muted-foreground"><%= edu.start_year %></td>
+                      <td class="py-3 px-4 border-r border-muted/30 text-center text-muted-foreground"><%= edu.end_year || 'Sekarang' %></td>
+                      <td class="py-3 px-4 text-center text-foreground font-bold"><%= edu.gpa || '-' %></td>
+                    </tr>
+                  <% }) %>
+                </tbody>
+              </table>
+            </div>
+            
+            <!-- Pagination -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mt-2 text-xs text-muted-foreground" id="edu-table-pagination">
+              <div>
+                Showing <span class="font-semibold text-foreground pagination-start">0</span> to 
+                <span class="font-semibold text-foreground pagination-end">0</span> of 
+                <span class="font-semibold text-foreground pagination-total">0</span> entries
+              </div>
+              <div class="flex gap-2">
+                <button onclick="changePage('edu-table', -1)" class="btn border px-3 py-1 text-xs rounded-lg hover:bg-muted font-semibold transition-all disabled:opacity-50 disabled:pointer-events-none">Previous</button>
+                <button onclick="changePage('edu-table', 1)" class="btn border px-3 py-1 text-xs rounded-lg hover:bg-muted font-semibold transition-all disabled:opacity-50 disabled:pointer-events-none">Next</button>
+              </div>
+            </div>
+          <% } %>
+        </div>
+
+        <!-- 2. Penelitian -->
+        <div id="tab-research" class="tab-pane hidden space-y-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-2">
+            <h2 class="text-xl font-bold text-foreground">Penelitian & Riset</h2>
+            <input
+              type="text"
+              placeholder="Cari penelitian..."
+              class="input-premium w-64 text-sm"
+              onkeyup="searchTable('res-table', this.value)"
+            />
+          </div>
+          <% if (research.length === 0) { %>
+            <div class="text-center py-12 text-muted-foreground">Belum ada data penelitian.</div>
+          <% } else { %>
+            <div class="overflow-x-auto rounded-xl border border-muted/50">
+              <table class="w-full text-sm border-collapse" id="res-table">
+                <thead class="bg-muted/50 border-b border-muted/50">
+                  <tr>
+                    <th class="py-3 px-4 font-semibold text-muted-foreground border-r border-muted/50 w-12 text-center">No</th>
+                    <th class="py-3 px-4 font-semibold text-muted-foreground border-r border-muted/50 text-left">Judul Penelitian</th>
+                    <th class="py-3 px-4 font-semibold text-muted-foreground border-r border-muted/50 text-left">Peran</th>
+                    <th class="py-3 px-4 font-semibold text-muted-foreground border-r border-muted/50 text-left">Sumber Pendanaan</th>
+                    <th class="py-3 px-4 font-semibold text-muted-foreground border-r border-muted/50 text-right">Dana</th>
+                    <th class="py-3 px-4 font-semibold text-muted-foreground border-r border-muted/50 text-center">Periode</th>
+                    <th class="py-3 px-4 font-semibold text-muted-foreground text-center">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% research.forEach((resItem, idx) => { %>
+                    <tr class="border-b border-muted/30 last:border-0 hover:bg-muted/10 transition-colors">
+                      <td class="py-3 px-4 border-r border-muted/30 text-center text-muted-foreground"><%= idx + 1 %></td>
+                      <td class="py-3 px-4 border-r border-muted/30 font-bold text-foreground max-w-xs md:max-w-md truncate"><%= resItem.title %></td>
+                      <td class="py-3 px-4 border-r border-muted/30 text-foreground font-medium"><%= resItem.role %></td>
+                      <td class="py-3 px-4 border-r border-muted/30 text-muted-foreground"><%= resItem.funding_source || '-' %></td>
+                      <td class="py-3 px-4 border-r border-muted/30 text-right text-foreground font-semibold">
+                        <%= resItem.budget ? new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(resItem.budget) : '-' %>
+                      </td>
+                      <td class="py-3 px-4 border-r border-muted/30 text-center text-muted-foreground">
+                        <%= formatDate(resItem.start_date) %> s/d <%= formatDate(resItem.end_date) %>
+                      </td>
+                      <td class="py-3 px-4 text-center">
+                        <span class="inline-flex items-center rounded-full bg-emerald-500/10 px-2 py-0.5 text-xs font-semibold text-emerald-600 dark:text-emerald-500 border border-emerald-500/20">
+                          <%= resItem.status || 'Selesai' %>
+                        </span>
+                      </td>
+                    </tr>
+                  <% }) %>
+                </tbody>
+              </table>
+            </div>
+            
+            <!-- Pagination -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mt-2 text-xs text-muted-foreground" id="res-table-pagination">
+              <div>
+                Showing <span class="font-semibold text-foreground pagination-start">0</span> to 
+                <span class="font-semibold text-foreground pagination-end">0</span> of 
+                <span class="font-semibold text-foreground pagination-total">0</span> entries
+              </div>
+              <div class="flex gap-2">
+                <button onclick="changePage('res-table', -1)" class="btn border px-3 py-1 text-xs rounded-lg hover:bg-muted font-semibold transition-all disabled:opacity-50 disabled:pointer-events-none">Previous</button>
+                <button onclick="changePage('res-table', 1)" class="btn border px-3 py-1 text-xs rounded-lg hover:bg-muted font-semibold transition-all disabled:opacity-50 disabled:pointer-events-none">Next</button>
+              </div>
+            </div>
+          <% } %>
+        </div>
+
+        <!-- 3. Publikasi -->
+        <div id="tab-publications" class="tab-pane hidden space-y-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-2">
+            <h2 class="text-xl font-bold text-foreground">Publikasi Ilmiah</h2>
+            <input
+              type="text"
+              placeholder="Cari publikasi..."
+              class="input-premium w-64 text-sm"
+              onkeyup="searchTable('pub-table', this.value)"
+            />
+          </div>
+          <% if (publications.length === 0) { %>
+            <div class="text-center py-12 text-muted-foreground">Belum ada data publikasi ilmiah.</div>
+          <% } else { %>
+            <div class="overflow-x-auto rounded-xl border border-muted/50">
+              <table class="w-full text-sm border-collapse" id="pub-table">
+                <thead class="bg-muted/50 border-b border-muted/50">
+                  <tr>
+                    <th class="py-3 px-4 font-semibold text-muted-foreground border-r border-muted/50 w-12 text-center">No</th>
+                    <th class="py-3 px-4 font-semibold text-muted-foreground border-r border-muted/50 text-left">Judul Publikasi</th>
+                    <th class="py-3 px-4 font-semibold text-muted-foreground border-r border-muted/50 text-center">Penulis Ke</th>
+                    <th class="py-3 px-4 font-semibold text-muted-foreground border-r border-muted/50 text-center">Tanggal</th>
+                    <th class="py-3 px-4 font-semibold text-muted-foreground border-r border-muted/50 text-left">DOI</th>
+                    <th class="py-3 px-4 font-semibold text-muted-foreground text-left">Link Jurnal</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% publications.forEach((pub, idx) => { %>
+                    <tr class="border-b border-muted/30 last:border-0 hover:bg-muted/10 transition-colors">
+                      <td class="py-3 px-4 border-r border-muted/30 text-center text-muted-foreground"><%= idx + 1 %></td>
+                      <td class="py-3 px-4 border-r border-muted/30 font-bold text-foreground max-w-xs md:max-w-md truncate"><%= pub.title %></td>
+                      <td class="py-3 px-4 border-r border-muted/30 text-center text-foreground font-semibold">
+                        Penulis Ke-<%= pub.author_order %> <%= pub.is_corresponding ? '(Corresponding)' : '' %>
+                      </td>
+                      <td class="py-3 px-4 border-r border-muted/30 text-center text-muted-foreground"><%= formatDate(pub.publication_date) %></td>
+                      <td class="py-3 px-4 border-r border-muted/30 text-muted-foreground">
+                        <% if (pub.doi) { %>
+                          <code class="bg-muted px-1.5 py-0.5 rounded border border-muted-foreground/20 text-xs"><%= pub.doi %></code>
+                        <% } else { %>
+                          -
+                        <% } %>
+                      </td>
+                      <td class="py-3 px-4 text-left">
+                        <% if (pub.url) { %>
+                          <a href="<%= pub.url %>" target="_blank" class="text-primary hover:underline font-semibold inline-flex items-center gap-1">
+                            Buka Link
+                            <svg xmlns="http://www.w3.org/2000/svg" class="size-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                          </a>
+                        <% } else { %>
+                          -
+                        <% } %>
+                      </td>
+                    </tr>
+                  <% }) %>
+                </tbody>
+              </table>
+            </div>
+            
+            <!-- Pagination -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mt-2 text-xs text-muted-foreground" id="pub-table-pagination">
+              <div>
+                Showing <span class="font-semibold text-foreground pagination-start">0</span> to 
+                <span class="font-semibold text-foreground pagination-end">0</span> of 
+                <span class="font-semibold text-foreground pagination-total">0</span> entries
+              </div>
+              <div class="flex gap-2">
+                <button onclick="changePage('pub-table', -1)" class="btn border px-3 py-1 text-xs rounded-lg hover:bg-muted font-semibold transition-all disabled:opacity-50 disabled:pointer-events-none">Previous</button>
+                <button onclick="changePage('pub-table', 1)" class="btn border px-3 py-1 text-xs rounded-lg hover:bg-muted font-semibold transition-all disabled:opacity-50 disabled:pointer-events-none">Next</button>
+              </div>
+            </div>
+          <% } %>
+        </div>
+
+        <!-- 4. Pengabdian -->
+        <div id="tab-services" class="tab-pane hidden space-y-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-2">
+            <h2 class="text-xl font-bold text-foreground">Pengabdian Masyarakat</h2>
+            <input
+              type="text"
+              placeholder="Cari pengabdian..."
+              class="input-premium w-64 text-sm"
+              onkeyup="searchTable('srv-table', this.value)"
+            />
+          </div>
+          <% if (services.length === 0) { %>
+            <div class="text-center py-12 text-muted-foreground">Belum ada data pengabdian masyarakat.</div>
+          <% } else { %>
+            <div class="overflow-x-auto rounded-xl border border-muted/50">
+              <table class="w-full text-sm border-collapse" id="srv-table">
+                <thead class="bg-muted/50 border-b border-muted/50">
+                  <tr>
+                    <th class="py-3 px-4 font-semibold text-muted-foreground border-r border-muted/50 w-12 text-center">No</th>
+                    <th class="py-3 px-4 font-semibold text-muted-foreground border-r border-muted/50 text-left">Judul Kegiatan</th>
+                    <th class="py-3 px-4 font-semibold text-muted-foreground border-r border-muted/50 text-left">Lokasi</th>
+                    <th class="py-3 px-4 font-semibold text-muted-foreground border-r border-muted/50 text-left">Peran</th>
+                    <th class="py-3 px-4 font-semibold text-muted-foreground border-r border-muted/50 text-left">Sumber Pendanaan</th>
+                    <th class="py-3 px-4 font-semibold text-muted-foreground border-r border-muted/50 text-center">Tanggal Mulai</th>
+                    <th class="py-3 px-4 font-semibold text-muted-foreground text-center">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% services.forEach((srv, idx) => { %>
+                    <tr class="border-b border-muted/30 last:border-0 hover:bg-muted/10 transition-colors">
+                      <td class="py-3 px-4 border-r border-muted/30 text-center text-muted-foreground"><%= idx + 1 %></td>
+                      <td class="py-3 px-4 border-r border-muted/30 font-bold text-foreground max-w-xs md:max-w-md truncate"><%= srv.title %></td>
+                      <td class="py-3 px-4 border-r border-muted/30 text-foreground font-medium"><%= srv.location %></td>
+                      <td class="py-3 px-4 border-r border-muted/30 text-muted-foreground"><%= srv.role || '-' %></td>
+                      <td class="py-3 px-4 border-r border-muted/30 text-muted-foreground"><%= srv.funding_source || '-' %></td>
+                      <td class="py-3 px-4 border-r border-muted/30 text-center text-muted-foreground"><%= formatDate(srv.start_date) %></td>
+                      <td class="py-3 px-4 text-center">
+                        <span class="inline-flex items-center rounded-full bg-emerald-500/10 px-2 py-0.5 text-xs font-semibold text-emerald-600 dark:text-emerald-500 border border-emerald-500/20">
+                          <%= srv.status || 'Selesai' %>
+                        </span>
+                      </td>
+                    </tr>
+                  <% }) %>
+                </tbody>
+              </table>
+            </div>
+            
+            <!-- Pagination -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mt-2 text-xs text-muted-foreground" id="srv-table-pagination">
+              <div>
+                Showing <span class="font-semibold text-foreground pagination-start">0</span> to 
+                <span class="font-semibold text-foreground pagination-end">0</span> of 
+                <span class="font-semibold text-foreground pagination-total">0</span> entries
+              </div>
+              <div class="flex gap-2">
+                <button onclick="changePage('srv-table', -1)" class="btn border px-3 py-1 text-xs rounded-lg hover:bg-muted font-semibold transition-all disabled:opacity-50 disabled:pointer-events-none">Previous</button>
+                <button onclick="changePage('srv-table', 1)" class="btn border px-3 py-1 text-xs rounded-lg hover:bg-muted font-semibold transition-all disabled:opacity-50 disabled:pointer-events-none">Next</button>
+              </div>
+            </div>
+          <% } %>
+        </div>
+
+        <!-- 5. Kepanitiaan -->
+        <div id="tab-committees" class="tab-pane hidden space-y-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-2">
+            <h2 class="text-xl font-bold text-foreground">Kepanitiaan</h2>
+            <input
+              type="text"
+              placeholder="Cari kepanitiaan..."
+              class="input-premium w-64 text-sm"
+              onkeyup="searchTable('cmt-table', this.value)"
+            />
+          </div>
+          <% if (committees.length === 0) { %>
+            <div class="text-center py-12 text-muted-foreground">Belum ada data kepanitiaan.</div>
+          <% } else { %>
+            <div class="overflow-x-auto rounded-xl border border-muted/50">
+              <table class="w-full text-sm border-collapse" id="cmt-table">
+                <thead class="bg-muted/50 border-b border-muted/50">
+                  <tr>
+                    <th class="py-3 px-4 font-semibold text-muted-foreground border-r border-muted/50 w-12 text-center">No</th>
+                    <th class="py-3 px-4 font-semibold text-muted-foreground border-r border-muted/50 text-left">Nama Kepanitiaan</th>
+                    <th class="py-3 px-4 font-semibold text-muted-foreground border-r border-muted/50 text-left">Peran</th>
+                    <th class="py-3 px-4 font-semibold text-muted-foreground border-r border-muted/50 text-left">Tujuan / Objective</th>
+                    <th class="py-3 px-4 font-semibold text-muted-foreground border-r border-muted/50 text-center">Periode</th>
+                    <th class="py-3 px-4 font-semibold text-muted-foreground text-center">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% committees.forEach((cmt, idx) => { %>
+                    <tr class="border-b border-muted/30 last:border-0 hover:bg-muted/10 transition-colors">
+                      <td class="py-3 px-4 border-r border-muted/30 text-center text-muted-foreground"><%= idx + 1 %></td>
+                      <td class="py-3 px-4 border-r border-muted/30 font-bold text-foreground"><%= cmt.name %></td>
+                      <td class="py-3 px-4 border-r border-muted/30 text-foreground font-medium">
+                        <%= cmt.role %> <%= cmt.is_leader ? '(Ketua)' : '' %>
+                      </td>
+                      <td class="py-3 px-4 border-r border-muted/30 text-muted-foreground max-w-xs truncate"><%= cmt.objective || '-' %></td>
+                      <td class="py-3 px-4 border-r border-muted/30 text-center text-muted-foreground">
+                        <%= formatDate(cmt.start_date) %> s/d <%= formatDate(cmt.end_date) %>
+                      </td>
+                      <td class="py-3 px-4 text-center">
+                        <span class="inline-flex items-center rounded-full bg-emerald-500/10 px-2 py-0.5 text-xs font-semibold text-emerald-600 dark:text-emerald-500 border border-emerald-500/20">
+                          <%= cmt.status || 'Selesai' %>
+                        </span>
+                      </td>
+                    </tr>
+                  <% }) %>
+                </tbody>
+              </table>
+            </div>
+            
+            <!-- Pagination -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mt-2 text-xs text-muted-foreground" id="cmt-table-pagination">
+              <div>
+                Showing <span class="font-semibold text-foreground pagination-start">0</span> to 
+                <span class="font-semibold text-foreground pagination-end">0</span> of 
+                <span class="font-semibold text-foreground pagination-total">0</span> entries
+              </div>
+              <div class="flex gap-2">
+                <button onclick="changePage('cmt-table', -1)" class="btn border px-3 py-1 text-xs rounded-lg hover:bg-muted font-semibold transition-all disabled:opacity-50 disabled:pointer-events-none">Previous</button>
+                <button onclick="changePage('cmt-table', 1)" class="btn border px-3 py-1 text-xs rounded-lg hover:bg-muted font-semibold transition-all disabled:opacity-50 disabled:pointer-events-none">Next</button>
+              </div>
+            </div>
+          <% } %>
+        </div>
+
+        <!-- 6. Penugasan -->
+        <div id="tab-assignments" class="tab-pane hidden space-y-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-2">
+            <h2 class="text-xl font-bold text-foreground">Riwayat Penugasan (Assignments)</h2>
+            <input
+              type="text"
+              placeholder="Cari penugasan..."
+              class="input-premium w-64 text-sm"
+              onkeyup="searchTable('asm-table', this.value)"
+            />
+          </div>
+          <% if (assignments.length === 0) { %>
+            <div class="text-center py-12 text-muted-foreground">Belum ada data penugasan.</div>
+          <% } else { %>
+            <div class="overflow-x-auto rounded-xl border border-muted/50">
+              <table class="w-full text-sm border-collapse" id="asm-table">
+                <thead class="bg-muted/50 border-b border-muted/50">
+                  <tr>
+                    <th class="py-3 px-4 font-semibold text-muted-foreground border-r border-muted/50 w-12 text-center">No</th>
+                    <th class="py-3 px-4 font-semibold text-muted-foreground border-r border-muted/50 text-left">Judul Tugas</th>
+                    <th class="py-3 px-4 font-semibold text-muted-foreground border-r border-muted/50 text-left">Deskripsi</th>
+                    <th class="py-3 px-4 font-semibold text-muted-foreground border-r border-muted/50 text-center">Prioritas</th>
+                    <th class="py-3 px-4 font-semibold text-muted-foreground border-r border-muted/50 text-center">Periode</th>
+                    <th class="py-3 px-4 font-semibold text-muted-foreground text-center">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% assignments.forEach((asm, idx) => { %>
+                    <tr class="border-b border-muted/30 last:border-0 hover:bg-muted/10 transition-colors">
+                      <td class="py-3 px-4 border-r border-muted/30 text-center text-muted-foreground"><%= idx + 1 %></td>
+                      <td class="py-3 px-4 border-r border-muted/30 font-bold text-foreground"><%= asm.title %></td>
+                      <td class="py-3 px-4 border-r border-muted/30 text-muted-foreground max-w-xs truncate"><%= asm.description || '-' %></td>
+                      <td class="py-3 px-4 border-r border-muted/30 text-center text-foreground font-semibold">
+                        <span class="px-2 py-0.5 rounded text-xs <%= asm.priority === 'high' ? 'bg-destructive/15 text-destructive border border-destructive/20' : asm.priority === 'medium' ? 'bg-amber-500/10 text-amber-600 dark:text-amber-500 border border-amber-500/20' : 'bg-slate-500/10 text-slate-500 border border-slate-500/20' %>">
+                          <%= asm.priority.toUpperCase() %>
+                        </span>
+                      </td>
+                      <td class="py-3 px-4 border-r border-muted/30 text-center text-muted-foreground">
+                        <%= formatDate(asm.start_date) %> s/d <%= formatDate(asm.due_date) %>
+                      </td>
+                      <td class="py-3 px-4 text-center">
+                        <span class="inline-flex items-center rounded-full bg-emerald-500/10 px-2 py-0.5 text-xs font-semibold text-emerald-600 dark:text-emerald-500 border border-emerald-500/20">
+                          <%= asm.status || 'Selesai' %>
+                        </span>
+                      </td>
+                    </tr>
+                  <% }) %>
+                </tbody>
+              </table>
+            </div>
+            
+            <!-- Pagination -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mt-2 text-xs text-muted-foreground" id="asm-table-pagination">
+              <div>
+                Showing <span class="font-semibold text-foreground pagination-start">0</span> to 
+                <span class="font-semibold text-foreground pagination-end">0</span> of 
+                <span class="font-semibold text-foreground pagination-total">0</span> entries
+              </div>
+              <div class="flex gap-2">
+                <button onclick="changePage('asm-table', -1)" class="btn border px-3 py-1 text-xs rounded-lg hover:bg-muted font-semibold transition-all disabled:opacity-50 disabled:pointer-events-none">Previous</button>
+                <button onclick="changePage('asm-table', 1)" class="btn border px-3 py-1 text-xs rounded-lg hover:bg-muted font-semibold transition-all disabled:opacity-50 disabled:pointer-events-none">Next</button>
+              </div>
+            </div>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // State of page numbering per table
+    const paginationState = {
+      'edu-table': { currentPage: 1 },
+      'res-table': { currentPage: 1 },
+      'pub-table': { currentPage: 1 },
+      'srv-table': { currentPage: 1 },
+      'cmt-table': { currentPage: 1 },
+      'asm-table': { currentPage: 1 }
+    };
+    
+    const rowsPerPage = 5;
+
+    function initTablePagination(tableId) {
+      paginationState[tableId].currentPage = 1;
+      paginateTable(tableId);
+    }
+
+    function searchTable(tableId, query) {
+      const table = document.getElementById(tableId);
+      if (!table) return;
+      
+      const tbody = table.querySelector("tbody");
+      const rows = tbody.querySelectorAll("tr");
+      const lowerQuery = query.toLowerCase();
+
+      rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        if (text.includes(lowerQuery)) {
+          row.style.display = ""; // Reset style to make it possible to display
+        } else {
+          row.style.display = "none"; // Hide completely
+        }
+      });
+
+      // Reset to page 1 on search
+      paginationState[tableId].currentPage = 1;
+      paginateTable(tableId);
+    }
+
+    function changePage(tableId, direction) {
+      const state = paginationState[tableId];
+      state.currentPage += direction;
+      paginateTable(tableId);
+    }
+
+    function paginateTable(tableId) {
+      const table = document.getElementById(tableId);
+      if (!table) return;
+      
+      const tbody = table.querySelector("tbody");
+      const rows = Array.from(tbody.querySelectorAll("tr"));
+      
+      // Filter rows that are NOT hidden by search logic
+      const searchMatchRows = rows.filter(row => row.style.display !== "none");
+      const totalRows = searchMatchRows.length;
+      const totalPages = Math.ceil(totalRows / rowsPerPage) || 1;
+      
+      let curPage = paginationState[tableId].currentPage;
+      if (curPage > totalPages) curPage = totalPages;
+      if (curPage < 1) curPage = 1;
+      paginationState[tableId].currentPage = curPage;
+
+      // Hide all rows first
+      rows.forEach(row => row.classList.add("hidden"));
+
+      const startIdx = (curPage - 1) * rowsPerPage;
+      const endIdx = Math.min(startIdx + rowsPerPage, totalRows);
+
+      // Show rows on current page
+      searchMatchRows.slice(startIdx, endIdx).forEach(row => row.classList.remove("hidden"));
+
+      // Update Pagination UI text
+      const pagContainer = document.getElementById(tableId + "-pagination");
+      if (pagContainer) {
+        if (totalRows === 0) {
+          pagContainer.querySelector(".pagination-start").textContent = "0";
+          pagContainer.querySelector(".pagination-end").textContent = "0";
+          pagContainer.querySelector(".pagination-total").textContent = "0";
+        } else {
+          pagContainer.querySelector(".pagination-start").textContent = (startIdx + 1).toString();
+          pagContainer.querySelector(".pagination-end").textContent = endIdx.toString();
+          pagContainer.querySelector(".pagination-total").textContent = totalRows.toString();
+        }
+        
+        // Disable/enable buttons
+        const prevBtn = pagContainer.querySelector("button:first-of-type");
+        const nextBtn = pagContainer.querySelector("button:last-of-type");
+        if (prevBtn) prevBtn.disabled = curPage === 1;
+        if (nextBtn) nextBtn.disabled = curPage === totalPages;
+      }
+    }
+
+    // Initialize all tables on DOM load
+    document.addEventListener("DOMContentLoaded", () => {
+      ['edu-table', 'res-table', 'pub-table', 'srv-table', 'cmt-table', 'asm-table'].forEach(tableId => {
+        initTablePagination(tableId);
+      });
+    });
+
+    // Also re-run init on HTMX swaps
+    document.addEventListener("htmx:afterSwap", () => {
+      ['edu-table', 'res-table', 'pub-table', 'srv-table', 'cmt-table', 'asm-table'].forEach(tableId => {
+        initTablePagination(tableId);
+      });
+    });
+  </script>
+
+  <script>
+    function switchTab(tabId) {
+      document.querySelectorAll(".tab-pane").forEach(pane => pane.classList.add("hidden"));
+      document.getElementById(tabId).classList.remove("hidden");
+      
+      const buttons = document.querySelectorAll("#portfolio-tabs button");
+      buttons.forEach(btn => {
+        btn.setAttribute("data-variant", "ghost");
+        btn.classList.remove("active-tab-btn");
+      });
+      
+      const activeBtn = document.getElementById("btn-" + tabId);
+      activeBtn.setAttribute("data-variant", "default");
+      activeBtn.classList.add("active-tab-btn");
+    }
+  </script>
+</main>
+<%- include('partials/footer') %>
