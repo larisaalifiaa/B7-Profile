@@ -1,4 +1,4 @@
-require('dotenv').config();
+require('dotenv').config(); // Trigger nodemon restart
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
@@ -28,6 +28,9 @@ const sessionStore = new MySQLStore({
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
+  schema: {
+    tableName: 'express_sessions'
+  }
 });
 
 app.use(session({
@@ -40,6 +43,33 @@ app.use(session({
     maxAge: 1000 * 60 * 60 * 24 // 1 day
   }
 }));
+
+// Global middleware to fetch user details for EJS templates
+app.use(async (req, res, next) => {
+  if (req.session.userId) {
+    try {
+      const db = require('./lib/db');
+      const [rows] = await db.query(`
+        SELECT u.name, u.email, u.photo, e.employee_number, e.status, es.name AS emp_status_name 
+        FROM users u 
+        LEFT JOIN employees e ON u.id = e.id 
+        LEFT JOIN employment_statuses es ON e.employment_status_id = es.id 
+        WHERE u.id = ?
+      `, [req.session.userId]);
+      if (rows.length > 0) {
+        res.locals.user = rows[0];
+      } else {
+        res.locals.user = null;
+      }
+    } catch (err) {
+      console.error('Error loading user session details:', err);
+      res.locals.user = null;
+    }
+  } else {
+    res.locals.user = null;
+  }
+  next();
+});
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
