@@ -374,10 +374,10 @@ const changePassword = async (req, res, next) => {
     });
   }
 
-  if (new_password.length < 6) {
+  if (new_password.length < 8) {
     return res.render("change_password", {
       title: "Ubah Password",
-      error: "Password baru minimal harus 6 karakter.",
+      error: "Password baru minimal harus 8 karakter.",
       success: null
     });
   }
@@ -505,13 +505,13 @@ const exportPortfolioPDF = async (req, res, next) => {
       doc.fillColor("#0f172a");
       doc.font("Times-Bold");
       
-      doc.fontSize(14).text("UNIVERSITAS ANDALAS", 130, 40, { align: "center", width: 415 });
-      doc.fontSize(12).text("FAKULTAS TEKNOLOGI INFORMASI", 130, 56, { align: "center", width: 415 });
-      doc.fontSize(11).text("DEPARTEMEN TEKNOLOGI INFORMASI", 130, 70, { align: "center", width: 415 });
+      doc.fontSize(14).text("UNIVERSITAS ANDALAS", 50, 40, { align: "center", width: 495 });
+      doc.fontSize(12).text("FAKULTAS TEKNOLOGI INFORMASI", 50, 56, { align: "center", width: 495 });
+      doc.fontSize(11).text("DEPARTEMEN SISTEM INFORMASI", 50, 70, { align: "center", width: 495 });
       
       doc.font("Times-Roman").fontSize(8.2).fillColor("#334155");
-      doc.text("Kampus Limau Manis, Padang, Sumatera Barat 25163", 130, 85, { align: "center", width: 415 });
-      doc.text("Telepon: (0751) 777xxx | Email: fti@unand.ac.id | Website: https://fti.unand.ac.id", 130, 96, { align: "center", width: 415 });
+      doc.text("Kampus Limau Manis, Padang, Sumatera Barat 25163", 50, 85, { align: "center", width: 495 });
+      doc.text("Telepon: (0751) 777xxx | Email: fti@unand.ac.id | Website: https://fti.unand.ac.id", 50, 96, { align: "center", width: 495 });
 
       // Double line below kop (Thick + Thin)
       drawLine(112, "#0f172a", 1.8);
@@ -581,8 +581,7 @@ const exportPortfolioPDF = async (req, res, next) => {
     // --- Section Header Helper ---
     const drawSectionHeader = (titleText) => {
       checkPageBreak(35);
-      doc.rect(50, y, 4, 14).fill("#2563eb");
-      doc.fillColor("#0f172a").fontSize(10).font("Times-Bold").text(titleText, 62, y + 2);
+      doc.fillColor("#0f172a").fontSize(10).font("Times-Bold").text(titleText, 50, y + 2);
       y += 22;
     };
 
