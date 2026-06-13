@@ -31,9 +31,9 @@ async function seed() {
 
     // 3. Create/Retrieve User "Larisa"
     let userId;
+    const hashedPassword = await bcrypt.hash('password', 10);
     const [users] = await db.query('SELECT * FROM users WHERE email = ?', ['larisa@mail.com']);
     if (users.length === 0) {
-      const hashedPassword = await bcrypt.hash('password', 10);
       const [result] = await db.query(`
         INSERT INTO users 
         (name, email, password, created_at, updated_at) 
@@ -44,7 +44,9 @@ async function seed() {
       console.log(`Created user "Larisa Alifia Handini" with ID: ${userId}`);
     } else {
       userId = users[0].id;
-      console.log(`User "Larisa Alifia Handini" already exists with ID: ${userId}`);
+      // Reset password to default 'password' to ensure consistent E2E test state
+      await db.query('UPDATE users SET password = ?, updated_at = NOW() WHERE id = ?', [hashedPassword, userId]);
+      console.log(`User "Larisa Alifia Handini" already exists with ID: ${userId} (default password reset)`);
     }
 
     // 4. Create Employee record for Larisa
