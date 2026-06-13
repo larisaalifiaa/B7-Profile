@@ -11,38 +11,11 @@
     <div class="absolute bottom-1/4 right-1/4 translate-x-1/2 translate-y-1/2 w-80 h-80 bg-indigo-500/10 rounded-full blur-[100px] pointer-events-none animate-pulse-slow"></div>
 
     <!-- Main Welcoming Card -->
-    <div class="glass-card rounded-3xl overflow-hidden p-10 md:p-16 max-w-2xl mx-auto w-full border border-white/10 dark:border-white/5 relative z-10 shadow-2xl text-center flex flex-col items-center justify-center gap-6">
-      
-      <!-- Time-based dynamic badge -->
-      <span class="time-badge shadow-sm px-5 py-2.5 text-xs font-extrabold" id="time-badge">
-        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="animate-spin-slow"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-        <span id="greeting-text">Selamat Datang</span>
-      </span>
-
-      <!-- Main greeting heading -->
-      <div class="space-y-3">
-        <span class="text-xs font-bold text-muted-foreground uppercase tracking-widest block">Portal Layanan Mandiri Pegawai</span>
-        <h1 class="text-4xl font-extrabold tracking-tight text-foreground md:text-5xl leading-tight">
-          Selamat Datang,<br>
-          <span class="bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent block mt-2"><%= user ? user.name : 'Pegawai' %></span> 👋
-        </h1>
-      </div>
-
+    <div class="glass-card rounded-3xl overflow-hidden p-10 md:p-16 max-w-2xl ml-0 w-full border border-white/10 dark:border-white/5 relative z-10 shadow-2xl text-left">
+      <h1 class="text-3xl font-extrabold tracking-tight text-foreground md:text-5xl leading-tight" style="font-family: 'Plus Jakarta Sans', sans-serif !important; letter-spacing: -0.03em;">
+        Halo, <span class="bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent inline-block font-extrabold"><%= user ? user.name : 'Pegawai' %></span>! 👋
+      </h1>
     </div>
   </div>
-
-  <script>
-    (() => {
-      // Dynamic Greeting based on time
-      const hour = new Date().getHours();
-      let greeting = 'Selamat Malam';
-      if (hour >= 5 && hour < 12) greeting = 'Selamat Pagi';
-      else if (hour >= 12 && hour < 15) greeting = 'Selamat Siang';
-      else if (hour >= 15 && hour < 18) greeting = 'Selamat Sore';
-      
-      const el = document.getElementById('greeting-text');
-      if (el) el.textContent = greeting;
-    })();
-  </script>
 </main>
 <%- include('partials/footer') %>
