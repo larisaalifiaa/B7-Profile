@@ -42,22 +42,7 @@
         </a>
       </div>
 
-      <!-- Developer Stack Trace (Collapsible) -->
-      <% if (error && error.stack && Object.keys(error).length > 0) { %>
-        <div class="w-full text-left mt-4 border-t border-muted/30 pt-4">
-          <details class="group cursor-pointer">
-            <summary class="text-xs font-semibold text-muted-foreground flex items-center justify-between select-none">
-              <span>Detail Teknis (Developer Mode)</span>
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="group-open:rotate-180 transition-transform">
-                <path d="m6 9 6 6 6-6"/>
-              </svg>
-            </summary>
-            <div class="mt-2 text-xs font-mono bg-muted/65 p-3 rounded-lg overflow-x-auto text-muted-foreground max-h-40 border border-muted/50 leading-relaxed">
-              <%= error.stack %>
-            </div>
-          </details>
-        </div>
-      <% } %>
+
 
     </div>
 
