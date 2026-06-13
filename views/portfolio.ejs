@@ -3,19 +3,13 @@
 <main id="content">
   <%- include('partials/navbar') %>
 
-  <style>
-    .active-tab-btn {
-      background: linear-gradient(135deg, #2563eb, #3b82f6) !important;
-      color: #fff !important;
-      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
-    }
-  </style>
+
 
   <div class="container mx-auto p-6 md:p-10 space-y-6" id="portfolio-container">
     <!-- Breadcrumbs & Heading with Buttons -->
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
       <div class="flex flex-col gap-1">
-        <div class="flex items-center gap-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+        <div class="breadcrumb-premium flex items-center gap-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
           <a href="/home" class="hover:text-foreground transition-colors" hx-boost="true" hx-select="#content" hx-target="#content" hx-swap="outerHTML">Dashboard</a>
           <svg xmlns="http://www.w3.org/2000/svg" class="size-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
           <span class="text-primary">Portfolio</span>
@@ -24,7 +18,7 @@
       </div>
       
       <div class="flex flex-wrap gap-3">
-        <a href="/portfolio/pdf" class="btn shrink-0" data-variant="default" style="border-radius: 8px;">
+        <a href="/portfolio/pdf" class="btn shrink-0" data-slot="button" data-variant="default" style="border-radius: 12px;">
           <svg xmlns="http://www.w3.org/2000/svg" class="size-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
           Export PDF
         </a>
@@ -76,12 +70,12 @@
       <!-- Tabs Headers -->
       <div class="border-b bg-muted/30 p-4">
         <nav class="flex flex-wrap gap-2" aria-label="Tabs" id="portfolio-tabs">
-          <button onclick="switchTab('tab-education')" id="btn-tab-education" class="btn-sm shrink-0 active-tab-btn" style="border-radius: 6px;" data-variant="default">Riwayat Pendidikan</button>
-          <button onclick="switchTab('tab-research')" id="btn-tab-research" class="btn-sm shrink-0" style="border-radius: 6px;" data-variant="ghost">Penelitian & Riset</button>
-          <button onclick="switchTab('tab-publications')" id="btn-tab-publications" class="btn-sm shrink-0" style="border-radius: 6px;" data-variant="ghost">Publikasi Ilmiah</button>
-          <button onclick="switchTab('tab-services')" id="btn-tab-services" class="btn-sm shrink-0" style="border-radius: 6px;" data-variant="ghost">Pengabdian Masyarakat</button>
-          <button onclick="switchTab('tab-committees')" id="btn-tab-committees" class="btn-sm shrink-0" style="border-radius: 6px;" data-variant="ghost">Kepanitiaan</button>
-          <button onclick="switchTab('tab-assignments')" id="btn-tab-assignments" class="btn-sm shrink-0" style="border-radius: 6px;" data-variant="ghost">Riwayat Penugasan</button>
+          <button onclick="switchTab('tab-education')" id="btn-tab-education" class="btn-sm shrink-0 tab-btn-active" style="border-radius: 10px;" data-variant="default">Riwayat Pendidikan</button>
+          <button onclick="switchTab('tab-research')" id="btn-tab-research" class="btn-sm shrink-0" style="border-radius: 10px;" data-variant="ghost">Penelitian & Riset</button>
+          <button onclick="switchTab('tab-publications')" id="btn-tab-publications" class="btn-sm shrink-0" style="border-radius: 10px;" data-variant="ghost">Publikasi Ilmiah</button>
+          <button onclick="switchTab('tab-services')" id="btn-tab-services" class="btn-sm shrink-0" style="border-radius: 10px;" data-variant="ghost">Pengabdian Masyarakat</button>
+          <button onclick="switchTab('tab-committees')" id="btn-tab-committees" class="btn-sm shrink-0" style="border-radius: 10px;" data-variant="ghost">Kepanitiaan</button>
+          <button onclick="switchTab('tab-assignments')" id="btn-tab-assignments" class="btn-sm shrink-0" style="border-radius: 10px;" data-variant="ghost">Riwayat Penugasan</button>
         </nav>
       </div>
 
@@ -96,6 +90,7 @@
               placeholder="Cari pendidikan..."
               class="input-premium w-64 text-sm"
               onkeyup="searchTable('edu-table', this.value)"
+              style="box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.04) !important; border: 1px solid rgba(0, 0, 0, 0.15) !important; border-radius: 8px !important;"
             />
           </div>
           <% if (eduHistory.length === 0) { %>
@@ -154,6 +149,7 @@
               placeholder="Cari penelitian..."
               class="input-premium w-64 text-sm"
               onkeyup="searchTable('res-table', this.value)"
+              style="box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.04) !important; border: 1px solid rgba(0, 0, 0, 0.15) !important; border-radius: 8px !important;"
             />
           </div>
           <% if (research.length === 0) { %>
@@ -220,6 +216,7 @@
               placeholder="Cari publikasi..."
               class="input-premium w-64 text-sm"
               onkeyup="searchTable('pub-table', this.value)"
+              style="box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.04) !important; border: 1px solid rgba(0, 0, 0, 0.15) !important; border-radius: 8px !important;"
             />
           </div>
           <% if (publications.length === 0) { %>
@@ -293,6 +290,7 @@
               placeholder="Cari pengabdian..."
               class="input-premium w-64 text-sm"
               onkeyup="searchTable('srv-table', this.value)"
+              style="box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.04) !important; border: 1px solid rgba(0, 0, 0, 0.15) !important; border-radius: 8px !important;"
             />
           </div>
           <% if (services.length === 0) { %>
@@ -355,6 +353,7 @@
               placeholder="Cari kepanitiaan..."
               class="input-premium w-64 text-sm"
               onkeyup="searchTable('cmt-table', this.value)"
+              style="box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.04) !important; border: 1px solid rgba(0, 0, 0, 0.15) !important; border-radius: 8px !important;"
             />
           </div>
           <% if (committees.length === 0) { %>
@@ -419,6 +418,7 @@
               placeholder="Cari penugasan..."
               class="input-premium w-64 text-sm"
               onkeyup="searchTable('asm-table', this.value)"
+              style="box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.04) !important; border: 1px solid rgba(0, 0, 0, 0.15) !important; border-radius: 8px !important;"
             />
           </div>
           <% if (assignments.length === 0) { %>
@@ -595,12 +595,12 @@
       const buttons = document.querySelectorAll("#portfolio-tabs button");
       buttons.forEach(btn => {
         btn.setAttribute("data-variant", "ghost");
-        btn.classList.remove("active-tab-btn");
+        btn.classList.remove("tab-btn-active");
       });
       
       const activeBtn = document.getElementById("btn-" + tabId);
       activeBtn.setAttribute("data-variant", "default");
-      activeBtn.classList.add("active-tab-btn");
+      activeBtn.classList.add("tab-btn-active");
     }
   </script>
 </main>
