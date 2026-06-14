@@ -59,8 +59,3 @@ typings/
 
 # next.js build output
 .next
-
-# Playwright
-test-results/
-playwright-report/
-blob-report/

@@ -4,10 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "dev": "nodemon ./bin/www",
-    "test": "playwright test",
-    "test:headed": "playwright test --headed",
-    "test:codegen": "playwright codegen"
+    "dev": "nodemon ./bin/www"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
@@ -23,8 +20,5 @@
     "multer": "^2.1.1",
     "mysql2": "^3.22.3",
     "pdfkit": "^0.19.1"
-  },
-  "devDependencies": {
-    "@playwright/test": "^1.60.0"
   }
 }
