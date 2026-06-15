@@ -24,6 +24,7 @@ const home = async (req, res, next) => {
     const [[pubCount]] = await db.query("SELECT COUNT(*) AS count FROM publication_authors WHERE lecturer_id = ?", [userId]);
     const [[serCount]] = await db.query("SELECT COUNT(*) AS count FROM community_service_members WHERE lecturer_id = ?", [userId]);
     const [[comCount]] = await db.query("SELECT COUNT(*) AS count FROM committee_members WHERE employee_id = ?", [userId]);
+    const [[asnCount]] = await db.query("SELECT COUNT(*) AS count FROM assignments WHERE assigned_to = ?", [userId]);
 
     res.render("home", { 
       title: "Dashboard", 
@@ -33,7 +34,8 @@ const home = async (req, res, next) => {
         research: resCount.count,
         publications: pubCount.count,
         services: serCount.count,
-        committees: comCount.count
+        committees: comCount.count,
+        assignments: asnCount.count
       }
     });
   } catch (err) {
