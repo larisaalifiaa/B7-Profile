@@ -92,7 +92,7 @@ const viewPortfolio = async (req, res, next) => {
     `, [userId]);
 
     res.render("portfolio", {
-      title: "Portofolio Pribadi",
+      title: "My Portfolio",
       employee,
       lecturer,
       eduHistory,
@@ -132,7 +132,7 @@ const viewProfile = async (req, res, next) => {
     const lecturer = lecRows.length > 0 ? lecRows[0] : null;
 
     res.render("profile", {
-      title: "Profil Lengkap",
+      title: "My Profile",
       employee: empRows[0],
       lecturer,
       formatDate
@@ -163,7 +163,7 @@ const editProfilePage = async (req, res, next) => {
     }
 
     res.render("profile_edit", {
-      title: "Update Profil",
+      title: "Edit Profile",
       employee: empRows[0],
       error: null,
       success: null,
@@ -195,7 +195,7 @@ const updateProfile = async (req, res, next) => {
   if (req.multerError) {
     const employee = await reloadData();
     return res.render("profile_edit", {
-      title: "Update Profil",
+      title: "Edit Profile",
       employee,
       error: req.multerError,
       success: null,
@@ -225,7 +225,7 @@ const updateProfile = async (req, res, next) => {
   if (!name || name.trim() === "") {
     const employee = await reloadData();
     return res.render("profile_edit", {
-      title: "Update Profil",
+      title: "Edit Profile",
       employee,
       error: "Nama lengkap wajib diisi.",
       success: null,
@@ -236,7 +236,7 @@ const updateProfile = async (req, res, next) => {
   if (!national_id_number || !/^\d{16}$/.test(national_id_number)) {
     const employee = await reloadData();
     return res.render("profile_edit", {
-      title: "Update Profil",
+      title: "Edit Profile",
       employee,
       error: "NIK wajib berupa 16 digit angka.",
       success: null,
@@ -247,7 +247,7 @@ const updateProfile = async (req, res, next) => {
   if (phone_number && !/^\d{9,15}$/.test(phone_number)) {
     const employee = await reloadData();
     return res.render("profile_edit", {
-      title: "Update Profil",
+      title: "Edit Profile",
       employee,
       error: "Nomor telepon wajib berupa 9 hingga 15 digit angka.",
       success: null,
@@ -258,7 +258,7 @@ const updateProfile = async (req, res, next) => {
   if (!birth_date || isNaN(new Date(birth_date).getTime())) {
     const employee = await reloadData();
     return res.render("profile_edit", {
-      title: "Update Profil",
+      title: "Edit Profile",
       employee,
       error: "Tanggal lahir tidak valid.",
       success: null,
@@ -269,7 +269,7 @@ const updateProfile = async (req, res, next) => {
   if (new Date(birth_date) > new Date()) {
     const employee = await reloadData();
     return res.render("profile_edit", {
-      title: "Update Profil",
+      title: "Edit Profile",
       employee,
       error: "Tanggal lahir tidak boleh di masa depan.",
       success: null,
@@ -280,7 +280,7 @@ const updateProfile = async (req, res, next) => {
   if (!address || address.trim() === "") {
     const employee = await reloadData();
     return res.render("profile_edit", {
-      title: "Update Profil",
+      title: "Edit Profile",
       employee,
       error: "Alamat wajib diisi.",
       success: null,
@@ -340,7 +340,7 @@ const updateProfile = async (req, res, next) => {
     const updatedEmployee = await reloadData();
 
     res.render("profile_edit", {
-      title: "Update Profil",
+      title: "Edit Profile",
       employee: updatedEmployee,
       error: null,
       success: "Profil berhasil diperbarui!",
@@ -355,7 +355,7 @@ const updateProfile = async (req, res, next) => {
 // 5. Change Password Page
 const changePasswordPage = (req, res) => {
   res.render("change_password", {
-    title: "Ubah Password",
+    title: "Change Password",
     error: null,
     success: null
   });
@@ -368,7 +368,7 @@ const changePassword = async (req, res, next) => {
 
   if (!current_password || !new_password || !confirm_password) {
     return res.render("change_password", {
-      title: "Ubah Password",
+      title: "Change Password",
       error: "Semua kolom password wajib diisi.",
       success: null
     });
@@ -376,7 +376,7 @@ const changePassword = async (req, res, next) => {
 
   if (new_password.length < 8) {
     return res.render("change_password", {
-      title: "Ubah Password",
+      title: "Change Password",
       error: "Password baru minimal harus 8 karakter.",
       success: null
     });
@@ -384,7 +384,7 @@ const changePassword = async (req, res, next) => {
 
   if (new_password !== confirm_password) {
     return res.render("change_password", {
-      title: "Ubah Password",
+      title: "Change Password",
       error: "Konfirmasi password baru tidak cocok.",
       success: null
     });
@@ -395,7 +395,7 @@ const changePassword = async (req, res, next) => {
     const [rows] = await db.query("SELECT password FROM users WHERE id = ?", [userId]);
     if (rows.length === 0) {
       return res.render("change_password", {
-        title: "Ubah Password",
+        title: "Change Password",
         error: "Pengguna tidak ditemukan.",
         success: null
       });
@@ -405,7 +405,7 @@ const changePassword = async (req, res, next) => {
     const isMatch = await bcrypt.compare(current_password, user.password);
     if (!isMatch) {
       return res.render("change_password", {
-        title: "Ubah Password",
+        title: "Change Password",
         error: "Password saat ini salah.",
         success: null
       });
@@ -416,7 +416,7 @@ const changePassword = async (req, res, next) => {
     await db.query("UPDATE users SET password = ?, updated_at = NOW() WHERE id = ?", [hashedNew, userId]);
 
     res.render("change_password", {
-      title: "Ubah Password",
+      title: "Change Password",
       error: null,
       success: "Password berhasil diubah!"
     });

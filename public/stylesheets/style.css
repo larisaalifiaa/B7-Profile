@@ -529,3 +529,55 @@ main > div.container {
     width: 100% !important;
   }
 }
+
+/* ── Custom Dashboard Grid (3 Columns Layout) ── */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 1.5rem;
+}
+@media (min-width: 640px) {
+  .dashboard-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (min-width: 1024px) {
+  .dashboard-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* ── Enhanced Dashboard Stat Cards ── */
+.dashboard-stat-card {
+  background-color: var(--card) !important;
+  border: 1.5px solid var(--border) !important;
+  border-radius: 24px !important;
+  box-shadow: 0 12px 28px -5px rgba(0, 0, 0, 0.09), 
+              0 8px 12px -6px rgba(0, 0, 0, 0.04) !important;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  position: relative;
+  overflow: hidden;
+}
+.dashboard-stat-card:hover {
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: 0 22px 45px -10px rgba(0, 0, 0, 0.15), 
+              0 10px 20px -5px rgba(0, 0, 0, 0.06) !important;
+  border-color: var(--primary) !important;
+}
+
+/* ── Custom Dashboard Card Background Icons ── */
+.dashboard-stat-card .bg-icon {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  width: 64px;
+  height: 64px;
+  opacity: 0.18;
+  pointer-events: none;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+.dashboard-stat-card:hover .bg-icon {
+  transform: scale(1.15) rotate(6deg) !important;
+  opacity: 0.35;
+}
+
