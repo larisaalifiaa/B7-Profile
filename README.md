@@ -13,12 +13,11 @@ Sistem informasi akademik berbasis web modern yang dirancang untuk mengelola, me
 
 ## 🚀 Fitur Utama
 
-* **Dashboard**: Ringkasan data akademik Tridharma.
-* **Profile**: Detail data pribadi & kepegawaian.
-* **Portfolio**: Riwayat Pendidikan, Penelitian, Publikasi, Pengabdian, Kepanitiaan, dan Penugasan.
-* **Ekspor PDF**: Cetak berkas portofolio akademik.
-* **Multi-Theme**: Pilihan tema instan & Mode Gelap.
-* **Keamanan**: Sistem login berbasis enkripsi bcrypt.
+* **Lihat Profile**
+* **Edit Profile**
+* **Lihat Portfolio**
+* **Cetak Portfolio (PDF)**
+* **Ubah Password**
 
 ---
 
