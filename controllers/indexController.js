@@ -5,8 +5,40 @@ const index = (req, res) => {
   res.redirect("/home");
 };
 
-const home = (req, res) => {
-  res.render("home", { title: "Home" });
+const home = async (req, res, next) => {
+  const userId = req.session.userId;
+  try {
+    const [empRows] = await db.query(`
+      SELECT e.*, u.email, u.photo, ou.name AS org_unit_name, es.name AS emp_status_name 
+      FROM employees e 
+      JOIN users u ON e.id = u.id 
+      LEFT JOIN organization_units ou ON e.organization_unit_id = ou.id 
+      LEFT JOIN employment_statuses es ON e.employment_status_id = es.id 
+      WHERE e.id = ?
+    `, [userId]);
+
+    const employee = empRows.length > 0 ? empRows[0] : null;
+
+    const [[eduCount]] = await db.query("SELECT COUNT(*) AS count FROM education_histories WHERE employee_id = ?", [userId]);
+    const [[resCount]] = await db.query("SELECT COUNT(*) AS count FROM research_members WHERE lecturer_id = ?", [userId]);
+    const [[pubCount]] = await db.query("SELECT COUNT(*) AS count FROM publication_authors WHERE lecturer_id = ?", [userId]);
+    const [[serCount]] = await db.query("SELECT COUNT(*) AS count FROM community_service_members WHERE lecturer_id = ?", [userId]);
+    const [[comCount]] = await db.query("SELECT COUNT(*) AS count FROM committee_members WHERE employee_id = ?", [userId]);
+
+    res.render("home", { 
+      title: "Dashboard", 
+      employee,
+      stats: {
+        education: eduCount.count,
+        research: resCount.count,
+        publications: pubCount.count,
+        services: serCount.count,
+        committees: comCount.count
+      }
+    });
+  } catch (err) {
+    next(err);
+  }
 };
 
 const loginPage = (req, res) => {
