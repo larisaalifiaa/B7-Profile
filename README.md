@@ -1,4 +1,4 @@
-# B7-Profile — Sistem Informasi Portofolio Akademik Dosen
+# B7-Profile
 
 Sistem informasi akademik berbasis web modern yang dirancang untuk mengelola, menyusun, dan memvisualisasikan portofolio akademik serta data Tridharma Perguruan Tinggi bagi dosen dan staf akademik secara terpusat, aman, dan interaktif.
 
@@ -8,30 +8,17 @@ Sistem informasi akademik berbasis web modern yang dirancang untuk mengelola, me
 
 * **Nama:** Larisa Alifia Handini
 * **NIM:** 2411523026
-* **Tugas:** Proyek Akhir Praktikum Pemrograman Web (PWEB)
 
 ---
 
 ## 🚀 Fitur Utama
 
-Sistem **B7-Profile** dilengkapi dengan fitur-fitur premium yang menunjang pengelolaan data akademik secara efisien:
-
-1. **Dashboard Ringkasan (Tridharma Stats)**
-   * Menampilkan ringkasan statistik portofolio dalam bentuk kartu (*stat cards*) yang berjejer horizontal (3 kolom).
-   * Desain kartu dilengkapi dengan garis aksen gradien warna, indikator denyut warna (*pulsing dot*), dan gambar elemen latar belakang (*thematic watermark icon*) yang interaktif.
-2. **Profil Mandiri (My Profile)**
-   * Informasi detail data pribadi (Nama, NIP, TTL, Jenis Kelamin, Alamat, No. Telepon).
-   * Informasi kepegawaian (Divisi/Unit, Status Pegawai, Jabatan Fungsional, Gelar Akademik).
-   * Fitur sunting foto profil dan data pribadi secara instan.
-3. **Portofolio Terintegrasi (My Portfolio)**
-   * Pengelolaan riwayat Pendidikan, Penelitian, Publikasi, Pengabdian Masyarakat, Kepanitiaan, dan Riwayat Penugasan.
-4. **Ekspor Portofolio ke PDF**
-   * Fitur mengunduh ringkasan portofolio dosen secara resmi ke dalam dokumen PDF menggunakan pustaka `pdfkit`.
-5. **Multi-Theme & Mode Gelap (Dark Mode)**
-   * Mendukung perpindahan tema secara instan (Default, Claude, Doom 64, Supabase) dan pergantian mode terang/gelap yang tersimpan secara lokal di peramban (*localStorage*).
-6. **Keamanan Akun (Security)**
-   * Fitur enkripsi password menggunakan metode hashing `bcryptjs`.
-   * Halaman ubah password mandiri yang aman dilengkapi dengan validasi session.
+* **Dashboard**: Ringkasan data akademik Tridharma.
+* **Profile**: Detail data pribadi & kepegawaian.
+* **Portfolio**: Riwayat Pendidikan, Penelitian, Publikasi, Pengabdian, Kepanitiaan, dan Penugasan.
+* **Ekspor PDF**: Cetak berkas portofolio akademik.
+* **Multi-Theme**: Pilihan tema instan & Mode Gelap.
+* **Keamanan**: Sistem login berbasis enkripsi bcrypt.
 
 ---
 
