@@ -289,25 +289,26 @@ const updateProfile = async (req, res, next) => {
     });
   }
 
+  const connection = await db.getConnection();
   try {
     // Start Transaction
-    await db.query("START TRANSACTION");
+    await connection.beginTransaction();
 
     // Update users table
     if (photoValue) {
-      await db.query(
+      await connection.query(
         "UPDATE users SET name = ?, photo = ?, updated_at = NOW() WHERE id = ?",
         [name, photoValue, userId]
       );
     } else {
-      await db.query(
+      await connection.query(
         "UPDATE users SET name = ?, updated_at = NOW() WHERE id = ?",
         [name, userId]
       );
     }
 
     // Update employees table
-    await db.query(`
+    await connection.query(`
       UPDATE employees SET 
         name = ?, 
         national_id_number = ?, 
@@ -335,7 +336,7 @@ const updateProfile = async (req, res, next) => {
       userId
     ]);
 
-    await db.query("COMMIT");
+    await connection.commit();
 
     // Fetch updated employee details
     const updatedEmployee = await reloadData();
@@ -348,8 +349,10 @@ const updateProfile = async (req, res, next) => {
       formatDate
     });
   } catch (err) {
-    await db.query("ROLLBACK");
+    await connection.rollback();
     next(err);
+  } finally {
+    connection.release();
   }
 };
 
