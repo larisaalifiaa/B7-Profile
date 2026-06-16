@@ -114,12 +114,20 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* ── Sidebar ── */
-.sidebar {
+.sidebar nav {
   border-right: 1px solid hsl(var(--border)) !important;
   background-color: hsl(var(--card) / 0.85) !important;
   backdrop-filter: blur(15px) !important;
   -webkit-backdrop-filter: blur(15px) !important;
   box-shadow: 6px 0 24px rgba(0, 0, 0, 0.07) !important;
+}
+
+.sidebar[aria-hidden="true"] {
+  pointer-events: none !important;
+  width: 0 !important;
+  overflow: hidden !important;
+  border-right: none !important;
+  box-shadow: none !important;
 }
 
 @media (min-width: 48rem) {
@@ -131,6 +139,7 @@ h1, h2, h3, h4, h5, h6 {
     width: var(--sidebar-width, 16rem) !important;
     height: 100vh !important;
     z-index: 40 !important;
+    transition: width 0.3s ease-in-out !important;
   }
 
   .sidebar nav {
