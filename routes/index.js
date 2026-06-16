@@ -7,10 +7,10 @@ const { checkPermission } = require("../middlewares/acl");
 const multer = require("multer");
 const path = require("path");
 
-// Configure multer for profile photo upload
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, path.join(__dirname, "../public/uploads"));
+    const isVercel = process.env.VERCEL === '1';
+    cb(null, isVercel ? "/tmp" : path.join(__dirname, "../public/uploads"));
   },
   filename: function (req, file, cb) {
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);

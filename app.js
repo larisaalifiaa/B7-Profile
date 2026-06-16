@@ -20,7 +20,11 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+if (process.env.VERCEL === '1') {
+  app.use('/uploads', express.static('/tmp'));
+}
 app.use(express.static(path.join(__dirname, 'public')));
+
 
 // Session configuration
 const sessionStore = new MySQLStore({
