@@ -63,8 +63,8 @@ async function seed() {
       console.log(`Created user "Budianto, S.Kom." (Tendik) with ID: ${budiId}`);
     } else {
       budiId = budiUsers[0].id;
-      await db.query('UPDATE users SET password = ?, updated_at = NOW() WHERE id = ?', [hashedPassword, budiId]);
-      console.log(`User "Budianto, S.Kom." already exists with ID: ${budiId} (default password reset)`);
+      await db.query('UPDATE users SET name = ?, password = ?, updated_at = NOW() WHERE id = ?', ['Budianto, S.Kom.', hashedPassword, budiId]);
+      console.log(`User "Budianto, S.Kom." already exists with ID: ${budiId} (name & password updated)`);
     }
 
     // 4. Create Employee record for Larisa
@@ -117,7 +117,23 @@ async function seed() {
         '2021-12-01'
       ]);
       console.log('Inserted employee record for Budianto');
+    } else {
+      await db.query(`
+        UPDATE employees SET 
+          name = ?, 
+          employee_number = ?, 
+          gender = ?, 
+          address = ?, 
+          phone_number = ?, 
+          updated_at = NOW() 
+        WHERE id = ?
+      `, ['Budianto, S.Kom.', '199502032021121002', 'male', 'Jl. Indarung No. 45, Padang', '082198765432', budiId]);
+      console.log('Updated employee record for Budianto (name and role reset)');
     }
+
+    // Ensure Budi is NOT in the lecturers table
+    await db.query('DELETE FROM lecturers WHERE id = ?', [budiId]);
+    console.log('Ensured Budi is NOT in lecturers table');
 
     // 5. Create Lecturer record for Larisa
     const [lecturers] = await db.query('SELECT * FROM lecturers WHERE id = ?', [userId]);
