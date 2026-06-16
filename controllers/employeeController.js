@@ -531,20 +531,6 @@ const exportPortfolioPDF = async (req, res, next) => {
     y += 25;
 
     // --- Profile Summary Section (Mockup aligned data style) ---
-    // Profile Picture (on the right)
-    let photoInserted = false;
-    if (employee.photo) {
-      const photoPath = path.join(__dirname, "../public/uploads", employee.photo);
-      if (fs.existsSync(photoPath)) {
-        try {
-          doc.image(photoPath, 470, y, { width: 75, height: 100 });
-          photoInserted = true;
-        } catch (e) {
-          console.error("Error drawing image in PDF:", e);
-        }
-      }
-    }
-
     doc.fillColor("#0f172a").font("Times-Bold").fontSize(11).text("DATA PEGAWAI", 50, y);
     
     // Aligned metadata
@@ -565,7 +551,7 @@ const exportPortfolioPDF = async (req, res, next) => {
     details.forEach(([label, val]) => {
       doc.fillColor("#475569").font("Times-Bold").text(label, 50, detailY, { width: 110 });
       doc.fillColor("#475569").font("Times-Roman").text(":", 165, detailY);
-      doc.fillColor("#0f172a").font("Times-Roman").text(val, 175, detailY, { width: photoInserted ? 280 : 360 });
+      doc.fillColor("#0f172a").font("Times-Roman").text(val, 175, detailY, { width: 370 });
       detailY += 15;
     });
 
