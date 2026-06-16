@@ -29,9 +29,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Session configuration
 const sessionStore = new MySQLStore({
   host: process.env.DB_HOST,
+  port: process.env.DB_PORT || 3306,
   user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
+  password: process.env.DB_PASSWORD || process.env.DB_PASS,
   database: process.env.DB_NAME,
+  ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : undefined,
   schema: {
     tableName: 'express_sessions'
   }
