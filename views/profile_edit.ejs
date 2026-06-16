@@ -46,7 +46,7 @@
             <div class="relative group flex-shrink-0">
               <div class="absolute -inset-1.5 rounded-2xl bg-gradient-to-tr from-blue-500 to-violet-500 opacity-15 blur-sm group-hover:opacity-25 transition-opacity"></div>
               <img
-                src="<%= employee.photo ? '/uploads/' + employee.photo : '/assets/images/placeholder.svg' %>"
+                src="<%= (employee.photo && employee.photo.startsWith('data:')) ? employee.photo : (employee.photo ? '/uploads/' + employee.photo : '/assets/images/placeholder.svg') %>"
                 onerror="this.onerror=null; this.src='/assets/images/placeholder.svg';"
                 class="relative rounded-2xl avatar-profile-edit border-2 border-background bg-card shadow-lg"
                 id="avatar-preview"

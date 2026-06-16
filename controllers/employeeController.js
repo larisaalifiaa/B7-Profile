@@ -216,9 +216,10 @@ const updateProfile = async (req, res, next) => {
     phone_number
   } = req.body;
 
-  let photoFilename = null;
+  let photoValue = null;
   if (req.file) {
-    photoFilename = req.file.filename;
+    const base64Data = req.file.buffer.toString('base64');
+    photoValue = `data:${req.file.mimetype};base64,${base64Data}`;
   }
 
   // Validations
@@ -293,10 +294,10 @@ const updateProfile = async (req, res, next) => {
     await db.query("START TRANSACTION");
 
     // Update users table
-    if (photoFilename) {
+    if (photoValue) {
       await db.query(
         "UPDATE users SET name = ?, photo = ?, updated_at = NOW() WHERE id = ?",
-        [name, photoFilename, userId]
+        [name, photoValue, userId]
       );
     } else {
       await db.query(

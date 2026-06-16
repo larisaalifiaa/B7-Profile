@@ -7,16 +7,7 @@ const { checkPermission } = require("../middlewares/acl");
 const multer = require("multer");
 const path = require("path");
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    const isVercel = process.env.VERCEL === '1';
-    cb(null, isVercel ? "/tmp" : path.join(__dirname, "../public/uploads"));
-  },
-  filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(null, "photo-" + uniqueSuffix + path.extname(file.originalname));
-  }
-});
+const storage = multer.memoryStorage();
 const upload = multer({ 
   storage: storage,
   limits: { fileSize: 2 * 1024 * 1024 }, // Max size: 2MB
