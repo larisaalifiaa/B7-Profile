@@ -1,9 +1,16 @@
 const { test, expect } = require('@playwright/test');
+const { execSync } = require('child_process');
 
 test.describe.serial('Facultyware E2E Test Suite', () => {
   let page;
 
   test.beforeAll(async ({ browser }) => {
+    // Run the database seeder to ensure a clean, consistent state
+    try {
+      execSync('node scripts/seed_data.js');
+    } catch (err) {
+      console.error('Failed to seed database before E2E tests:', err.message);
+    }
     // Create a shared page context so session persists across tests
     page = await browser.newPage();
   });
