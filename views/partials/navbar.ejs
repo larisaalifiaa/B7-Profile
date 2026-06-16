@@ -87,6 +87,7 @@
       </span>
       <img
         src="<%= user && user.photo ? '/uploads/' + user.photo : '/assets/images/placeholder.svg' %>"
+        onerror="this.onerror=null; this.src='/assets/images/placeholder.svg';"
         class="rounded-full avatar-nav border"
         alt="User Avatar"
       />

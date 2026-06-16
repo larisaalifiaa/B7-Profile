@@ -90,6 +90,7 @@
       <div class="flex items-center gap-3 py-2 px-1">
         <img
           src="<%= user && user.photo ? '/uploads/' + user.photo : '/assets/images/placeholder.svg' %>"
+          onerror="this.onerror=null; this.src='/assets/images/placeholder.svg';"
           class="rounded-full shrink-0 avatar-sidebar border border-border shadow"
           alt="Avatar"
         />
