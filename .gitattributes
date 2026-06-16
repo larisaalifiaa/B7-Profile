@@ -1,3 +1,0 @@
-# Exclude third-party vendor assets from GitHub language statistics
-public/assets/** linguist-vendored
-public/assets/* linguist-vendored
