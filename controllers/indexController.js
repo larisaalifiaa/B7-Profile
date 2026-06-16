@@ -19,6 +19,10 @@ const home = async (req, res, next) => {
 
     const employee = empRows.length > 0 ? empRows[0] : null;
 
+    // Check if the user is a lecturer (Dosen)
+    const [lecRows] = await db.query("SELECT * FROM lecturers WHERE id = ?", [userId]);
+    const isLecturer = lecRows.length > 0;
+
     const [[eduCount]] = await db.query("SELECT COUNT(*) AS count FROM education_histories WHERE employee_id = ?", [userId]);
     const [[resCount]] = await db.query("SELECT COUNT(*) AS count FROM research_members WHERE lecturer_id = ?", [userId]);
     const [[pubCount]] = await db.query("SELECT COUNT(*) AS count FROM publication_authors WHERE lecturer_id = ?", [userId]);
@@ -29,6 +33,7 @@ const home = async (req, res, next) => {
     res.render("home", { 
       title: "Dashboard", 
       employee,
+      isLecturer,
       stats: {
         education: eduCount.count,
         research: resCount.count,

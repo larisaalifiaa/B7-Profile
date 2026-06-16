@@ -49,6 +49,24 @@ async function seed() {
       console.log(`User "Larisa Alifia Handini" already exists with ID: ${userId} (default password reset)`);
     }
 
+    // 3.5 Create/Retrieve User "Budianto" (Tendik)
+    let budiId;
+    const [budiUsers] = await db.query('SELECT * FROM users WHERE email = ?', ['budi@mail.com']);
+    if (budiUsers.length === 0) {
+      const [result] = await db.query(`
+        INSERT INTO users 
+        (name, email, password, created_at, updated_at) 
+        VALUES 
+        (?, ?, ?, NOW(), NOW())
+      `, ['Budianto, S.Kom.', 'budi@mail.com', hashedPassword]);
+      budiId = result.insertId;
+      console.log(`Created user "Budianto, S.Kom." (Tendik) with ID: ${budiId}`);
+    } else {
+      budiId = budiUsers[0].id;
+      await db.query('UPDATE users SET password = ?, updated_at = NOW() WHERE id = ?', [hashedPassword, budiId]);
+      console.log(`User "Budianto, S.Kom." already exists with ID: ${budiId} (default password reset)`);
+    }
+
     // 4. Create Employee record for Larisa
     const [employees] = await db.query('SELECT * FROM employees WHERE id = ?', [userId]);
     if (employees.length === 0) {
@@ -73,6 +91,32 @@ async function seed() {
         '2024-01-01'
       ]);
       console.log('Inserted employee record for Larisa');
+    }
+
+    // 4.5 Create Employee record for Budianto
+    const [budiEmployees] = await db.query('SELECT * FROM employees WHERE id = ?', [budiId]);
+    if (budiEmployees.length === 0) {
+      await db.query(`
+        INSERT INTO employees 
+        (id, employee_number, national_id_number, tax_id_number, name, birth_place, birth_date, gender, religion, marital_status, address, phone_number, organization_unit_id, hire_date, employment_status_id, status, created_at, updated_at) 
+        VALUES 
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, 1, 'active', NOW(), NOW())
+      `, [
+        budiId,
+        '199502032021121002', // Employee Number / NIP
+        '9876543210987654',
+        '98.765.432.1-012.000',
+        'Budianto, S.Kom.',
+        'Padang',
+        '1995-02-03',
+        'male',
+        'Islam',
+        'married',
+        'Jl. Indarung No. 45, Padang',
+        '082198765432',
+        '2021-12-01'
+      ]);
+      console.log('Inserted employee record for Budianto');
     }
 
     // 5. Create Lecturer record for Larisa
@@ -126,6 +170,12 @@ async function seed() {
       console.log(`Assigned role 'staff' to user ${userId}`);
     }
 
+    const [mrBudi] = await db.query('SELECT * FROM model_has_roles WHERE role_id = ? AND model_id = ?', [roleId, budiId]);
+    if (mrBudi.length === 0) {
+      await db.query(`INSERT INTO model_has_roles (role_id, model_type, model_id) VALUES (?, 'App\\\\Models\\\\User', ?)`, [roleId, budiId]);
+      console.log(`Assigned role 'staff' to user ${budiId}`);
+    }
+
     // 7. Seed Education History
     const [edu] = await db.query('SELECT * FROM education_histories WHERE employee_id = ?', [userId]);
     if (edu.length === 0) {
@@ -137,6 +187,17 @@ async function seed() {
         (?, 'M.T.', 'Institut Teknologi Bandung', 'Teknik Informatika', 2024, 2026, 3.90, NOW(), NOW())
       `, [userId, userId]);
       console.log('Inserted education histories for Larisa');
+    }
+
+    const [eduBudi] = await db.query('SELECT * FROM education_histories WHERE employee_id = ?', [budiId]);
+    if (eduBudi.length === 0) {
+      await db.query(`
+        INSERT INTO education_histories 
+        (employee_id, degree, institution, major, start_year, end_year, gpa, created_at, updated_at) 
+        VALUES 
+        (?, 'S.Kom.', 'Universitas Andalas', 'Sistem Informasi', 2013, 2017, 3.50, NOW(), NOW())
+      `, [budiId]);
+      console.log('Inserted education histories for Budianto');
     }
 
     // 8. Seed Research and Research Members
@@ -223,8 +284,26 @@ async function seed() {
       console.log('Linked Larisa as Sekretaris');
     }
 
+    const [budiComm] = await db.query('SELECT * FROM committee_members WHERE employee_id = ?', [budiId]);
+    if (budiComm.length === 0) {
+      const [res] = await db.query(`
+        INSERT INTO committees 
+        (name, description, objective, expected_outcome, start_date, end_date, created_by, status, employee_id, created_at, updated_at) 
+        VALUES 
+        ('Panitia Ujian Tengah Semester FTI', 'Kepanitiaan pelaksana UTS tingkat fakultas.', 'Menyelenggarakan UTS dengan tertib', 'Laporan kelulusan dan kehadiran', '2026-04-01', '2026-04-15', ?, 'completed', ?, NOW(), NOW())
+      `, [budiId, budiId]);
+      const budiCommId = res.insertId;
+      await db.query(`
+        INSERT INTO committee_members 
+        (committee_id, employee_id, role, is_leader, created_at, updated_at) 
+        VALUES 
+        (?, ?, 'Anggota Pelaksana', 0, NOW(), NOW())
+      `, [budiCommId, budiId]);
+      console.log('Linked Budianto as Anggota Pelaksana for Panitia UTS');
+    }
+
     // 12. Seed Assignments
-    const [assignList] = await db.query('SELECT * FROM assignments');
+    const [assignList] = await db.query('SELECT * FROM assignments WHERE assigned_to = ?', [userId]);
     if (assignList.length === 0) {
       await db.query(`
         INSERT INTO assignments 
@@ -233,6 +312,17 @@ async function seed() {
         ('Penyusunan Kurikulum Baru 2026', 'Menyusun kurikulum sistem informasi berbasis Outcome-Based Education.', ?, ?, NULL, '2026-01-10', '2026-03-31', 'completed', 'high', ?, ?, 0, NOW(), NOW())
       `, [userId, userId, userId, userId]);
       console.log('Inserted assignment for Larisa');
+    }
+
+    const [budiAssign] = await db.query('SELECT * FROM assignments WHERE assigned_to = ?', [budiId]);
+    if (budiAssign.length === 0) {
+      await db.query(`
+        INSERT INTO assignments 
+        (title, description, assigned_by, assigned_to, parent_id, start_date, due_date, status, priority, assigned_by_id, assigned_to_id, parent_id_id, created_at, updated_at) 
+        VALUES 
+        ('Penginputan Data Nilai Mahasiswa', 'Memasukkan data nilai mahasiswa pasca UTS ke portal akademik.', ?, ?, NULL, '2026-04-16', '2026-04-30', 'completed', 'medium', ?, ?, 0, NOW(), NOW())
+      `, [budiId, budiId, budiId, budiId]);
+      console.log('Inserted assignment for Budianto');
     }
 
     console.log('Database seeding completed successfully!');

@@ -53,6 +53,7 @@
       </div>
 
       <!-- Stat 2: Penelitian -->
+      <% if (isLecturer) { %>
       <div class="dashboard-stat-card rounded-3xl p-6 flex flex-col items-center justify-center relative group" style="min-height: 140px;">
         <!-- Top accent color strip -->
         <div class="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-t-3xl"></div>
@@ -71,8 +72,10 @@
         </span>
         <span class="text-[10px] text-muted-foreground/60 mt-2 font-medium">Proyek Penelitian</span>
       </div>
+      <% } %>
 
       <!-- Stat 3: Publikasi -->
+      <% if (isLecturer) { %>
       <div class="dashboard-stat-card rounded-3xl p-6 flex flex-col items-center justify-center relative group" style="min-height: 140px;">
         <!-- Top accent color strip -->
         <div class="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-violet-500 to-purple-500 rounded-t-3xl"></div>
@@ -91,8 +94,10 @@
         </span>
         <span class="text-[10px] text-muted-foreground/60 mt-2 font-medium">Karya Ilmiah & Jurnal</span>
       </div>
+      <% } %>
 
       <!-- Stat 4: Pengabdian Masyarakat -->
+      <% if (isLecturer) { %>
       <div class="dashboard-stat-card rounded-3xl p-6 flex flex-col items-center justify-center relative group" style="min-height: 140px;">
         <!-- Top accent color strip -->
         <div class="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-amber-500 to-orange-500 rounded-t-3xl"></div>
@@ -111,6 +116,7 @@
         </span>
         <span class="text-[10px] text-muted-foreground/60 mt-2 font-medium">Pengabdian Masyarakat</span>
       </div>
+      <% } %>
 
       <!-- Stat 5: Kepanitiaan -->
       <div class="dashboard-stat-card rounded-3xl p-6 flex flex-col items-center justify-center relative group" style="min-height: 140px;">

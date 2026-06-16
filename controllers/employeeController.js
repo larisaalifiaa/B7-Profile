@@ -666,50 +666,56 @@ const exportPortfolioPDF = async (req, res, next) => {
     drawPDFTable(eduHeaders, eduWidths, eduRows, eduAligns);
 
     // --- 2. Penelitian ---
-    drawSectionHeader("Penelitian");
-    const resHeaders = ["No", "Judul Penelitian", "Peran", "Sumber Pendanaan", "Tahun Masuk", "Anggaran", "Status"];
-    const resWidths = [25, 170, 70, 80, 50, 50, 50];
-    const resAligns = ["center", "left", "left", "left", "center", "right", "center"];
-    const resRows = research.map((resItem, idx) => [
-      (idx + 1).toString(),
-      resItem.title || "-",
-      resItem.role || "-",
-      resItem.funding_source || "-",
-      resItem.start_date ? new Date(resItem.start_date).getFullYear().toString() : "-",
-      resItem.budget ? new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(parseFloat(resItem.budget)) : "-",
-      resItem.status || "-"
-    ]);
-    drawPDFTable(resHeaders, resWidths, resRows, resAligns);
+    if (lecturer) {
+      drawSectionHeader("Penelitian");
+      const resHeaders = ["No", "Judul Penelitian", "Peran", "Sumber Pendanaan", "Tahun Masuk", "Anggaran", "Status"];
+      const resWidths = [25, 170, 70, 80, 50, 50, 50];
+      const resAligns = ["center", "left", "left", "left", "center", "right", "center"];
+      const resRows = research.map((resItem, idx) => [
+        (idx + 1).toString(),
+        resItem.title || "-",
+        resItem.role || "-",
+        resItem.funding_source || "-",
+        resItem.start_date ? new Date(resItem.start_date).getFullYear().toString() : "-",
+        resItem.budget ? new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(parseFloat(resItem.budget)) : "-",
+        resItem.status || "-"
+      ]);
+      drawPDFTable(resHeaders, resWidths, resRows, resAligns);
+    }
 
     // --- 3. Publikasi Ilmiah ---
-    drawSectionHeader("Publikasi Ilmiah");
-    const pubHeaders = ["No", "Judul Artikel", "Tanggal Publikasi", "DOI", "Penulis Ke-", "Korespondensi?"];
-    const pubWidths = [25, 200, 70, 100, 50, 50];
-    const pubAligns = ["center", "left", "center", "left", "center", "center"];
-    const pubRows = publications.map((pub, idx) => [
-      (idx + 1).toString(),
-      pub.title || "-",
-      formatDate(pub.publication_date),
-      pub.doi || "-",
-      pub.author_order ? pub.author_order.toString() : "-",
-      pub.is_corresponding ? "Ya" : "Tidak"
-    ]);
-    drawPDFTable(pubHeaders, pubWidths, pubRows, pubAligns);
+    if (lecturer) {
+      drawSectionHeader("Publikasi Ilmiah");
+      const pubHeaders = ["No", "Judul Artikel", "Tanggal Publikasi", "DOI", "Penulis Ke-", "Korespondensi?"];
+      const pubWidths = [25, 200, 70, 100, 50, 50];
+      const pubAligns = ["center", "left", "center", "left", "center", "center"];
+      const pubRows = publications.map((pub, idx) => [
+        (idx + 1).toString(),
+        pub.title || "-",
+        formatDate(pub.publication_date),
+        pub.doi || "-",
+        pub.author_order ? pub.author_order.toString() : "-",
+        pub.is_corresponding ? "Ya" : "Tidak"
+      ]);
+      drawPDFTable(pubHeaders, pubWidths, pubRows, pubAligns);
+    }
 
     // --- 4. Pengabdian Masyarakat ---
-    drawSectionHeader("Pengabdian Masyarakat");
-    const srvHeaders = ["No", "Kegiatan Pengabdian", "Lokasi", "Peran", "Sumber Dana", "Status"];
-    const srvWidths = [25, 170, 100, 80, 70, 50];
-    const srvAligns = ["center", "left", "left", "left", "left", "center"];
-    const srvRows = services.map((srv, idx) => [
-      (idx + 1).toString(),
-      srv.title || "-",
-      srv.location || "-",
-      srv.role || "-",
-      srv.funding_source || "-",
-      srv.status || "-"
-    ]);
-    drawPDFTable(srvHeaders, srvWidths, srvRows, srvAligns);
+    if (lecturer) {
+      drawSectionHeader("Pengabdian Masyarakat");
+      const srvHeaders = ["No", "Kegiatan Pengabdian", "Lokasi", "Peran", "Sumber Dana", "Status"];
+      const srvWidths = [25, 170, 100, 80, 70, 50];
+      const srvAligns = ["center", "left", "left", "left", "left", "center"];
+      const srvRows = services.map((srv, idx) => [
+        (idx + 1).toString(),
+        srv.title || "-",
+        srv.location || "-",
+        srv.role || "-",
+        srv.funding_source || "-",
+        srv.status || "-"
+      ]);
+      drawPDFTable(srvHeaders, srvWidths, srvRows, srvAligns);
+    }
 
     // --- 5. Kepanitiaan ---
     drawSectionHeader("Kepanitiaan");

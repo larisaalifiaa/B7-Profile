@@ -97,4 +97,58 @@ test.describe.serial('Facultyware E2E Test Suite', () => {
     expect(json.status).toBe('success');
     expect(json.data.employee.name).toContain('Larisa Alifia Handini');
   });
+
+  test('6. Pengujian Pegawai Tendik - Login & Dashboard', async () => {
+    // Logout Larisa
+    await page.goto('/logout');
+    await page.waitForURL('**/login');
+
+    // Login as Budianto
+    await page.fill('#username', 'budi@mail.com');
+    await page.fill('#password', 'password');
+    await page.click('button[type="submit"]');
+    await page.waitForURL('**/home');
+
+    // Verifikasi nama dan sapaan
+    const heading = page.locator('h1');
+    await expect(heading).toContainText('Budianto');
+
+    // Verifikasi kartu statistik di dashboard (Tendik harusnya hanya Pendidikan, Kepanitiaan, Penugasan)
+    await expect(page.locator('text=Pendidikan').first()).toBeVisible();
+    await expect(page.locator('text=Kepanitiaan').first()).toBeVisible();
+    await expect(page.locator('text=Penugasan').first()).toBeVisible();
+
+    // Kartu dosen tidak boleh ada
+    await expect(page.locator('text=Penelitian')).not.toBeVisible();
+    await expect(page.locator('text=Publikasi')).not.toBeVisible();
+    await expect(page.locator('text=Pengabdian')).not.toBeVisible();
+  });
+
+  test('7. Pengujian Pegawai Tendik - Portofolio & PDF', async () => {
+    await page.goto('/portfolio');
+
+    // Verifikasi tab-tab yang ada
+    await expect(page.locator('#btn-tab-education')).toBeVisible();
+    await expect(page.locator('#btn-tab-committees')).toBeVisible();
+    await expect(page.locator('#btn-tab-assignments')).toBeVisible();
+
+    // Verifikasi tab dosen disembunyikan
+    await expect(page.locator('#btn-tab-research')).not.toBeVisible();
+    await expect(page.locator('#btn-tab-publications')).not.toBeVisible();
+    await expect(page.locator('#btn-tab-services')).not.toBeVisible();
+
+    // Pastikan unduh PDF untuk Budianto berfungsi
+    const [download] = await Promise.all([
+      page.waitForEvent('download'),
+      page.click('a[href="/portfolio/pdf"]')
+    ]);
+    expect(download.suggestedFilename()).toContain('portfolio-budianto');
+
+    // Verifikasi API mengembalikan data Tendik (lecturer = null)
+    const response = await page.goto('/api/portfolio');
+    const json = await response.json();
+    expect(json.status).toBe('success');
+    expect(json.data.employee.name).toContain('Budianto');
+    expect(json.data.lecturer).toBeNull();
+  });
 });

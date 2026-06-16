@@ -71,9 +71,11 @@
       <div class="border-b bg-muted/30 p-4">
         <nav class="flex flex-wrap gap-2" aria-label="Tabs" id="portfolio-tabs">
           <button onclick="switchTab('tab-education')" id="btn-tab-education" class="btn-sm shrink-0 tab-btn-active" style="border-radius: 10px;" data-variant="default">Riwayat Pendidikan</button>
+          <% if (lecturer) { %>
           <button onclick="switchTab('tab-research')" id="btn-tab-research" class="btn-sm shrink-0" style="border-radius: 10px;" data-variant="ghost">Penelitian & Riset</button>
           <button onclick="switchTab('tab-publications')" id="btn-tab-publications" class="btn-sm shrink-0" style="border-radius: 10px;" data-variant="ghost">Publikasi Ilmiah</button>
           <button onclick="switchTab('tab-services')" id="btn-tab-services" class="btn-sm shrink-0" style="border-radius: 10px;" data-variant="ghost">Pengabdian Masyarakat</button>
+          <% } %>
           <button onclick="switchTab('tab-committees')" id="btn-tab-committees" class="btn-sm shrink-0" style="border-radius: 10px;" data-variant="ghost">Kepanitiaan</button>
           <button onclick="switchTab('tab-assignments')" id="btn-tab-assignments" class="btn-sm shrink-0" style="border-radius: 10px;" data-variant="ghost">Riwayat Penugasan</button>
         </nav>
@@ -140,6 +142,7 @@
           <% } %>
         </div>
 
+        <% if (lecturer) { %>
         <!-- 2. Penelitian -->
         <div id="tab-research" class="tab-pane hidden space-y-4">
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-2">
@@ -343,7 +346,7 @@
             </div>
           <% } %>
         </div>
-
+        <% } %>
         <!-- 5. Kepanitiaan -->
         <div id="tab-committees" class="tab-pane hidden space-y-4">
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-2">
