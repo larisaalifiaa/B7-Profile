@@ -13,11 +13,11 @@ Sistem informasi akademik berbasis web modern yang dirancang untuk mengelola, me
 
 ## 🚀 Fitur Utama
 
-* **Lihat Profile**
-* **Edit Profile**
-* **Lihat Portfolio**
-* **Cetak Portfolio (PDF)**
-* **Ubah Password**
+* **Lihat & Sunting Profile** (termasuk unggah foto profil mandiri)
+* **Manajemen Portfolio Dinamis** (Pegawai Dosen melihat 6 tab lengkap, sedangkan Tenaga Kependidikan/Tendik hanya melihat 3 tab: Pendidikan, Kepanitiaan, dan Penugasan)
+* **Unduh Portfolio (PDF)** (Ekspor berkas PDF dinamis, di mana data Penelitian, Publikasi, dan Pengabdian secara otomatis disembunyikan untuk pegawai Tendik)
+* **Ubah Password** (Fitur keamanan enkripsi `bcrypt` mandiri)
+* **Sistem Otorisasi & ACL** (Akses route dan tampilan dinamis berbasis hak akses Dosen/Tendik)
 
 ---
 
@@ -128,9 +128,15 @@ Buka peramban (browser) Anda dan akses alamat `http://localhost:3000`.
 
 ## 🔑 Hak Akses & Akun Uji Coba
 
-Berdasarkan inisialisasi script `seed_data.js`, Anda dapat masuk ke sistem menggunakan akun dosen uji coba berikut:
-* **Username:** `larisa@mail.com`
-* **Password:** `password123`
+Berdasarkan inisialisasi script `seed_data.js`, Anda dapat masuk ke sistem menggunakan akun uji coba berikut:
+
+* **Akun Dosen (Akses 6 Card & 6 Tab Lengkap):**
+  * **Email/Username:** `larisa@mail.com`
+  * **Password:** `password123`
+
+* **Akun Tenaga Kependidikan / Tendik (Hanya 3 Card & 3 Tab):**
+  * **Email/Username:** `budi@mail.com`
+  * **Password:** `password123`
 
 ---
 
@@ -143,3 +149,17 @@ Proyek ini dilengkapi dengan **Role-Based Access Control (RBAC)** yang membatasi
   const { checkPermission } = require('../middlewares/acl');
   router.get('/route-khusus', checkPermission('nama_permission'), controller.action);
   ```
+
+---
+
+## 🧪 Pengujian E2E (End-to-End Testing)
+
+Proyek ini telah dilengkapi dengan unit test otomatis berbasis **Playwright** untuk memverifikasi seluruh alur sistem (login, hak akses Dosen & Tendik, sunting profil, serta unduh berkas PDF).
+
+Untuk menjalankan pengujian otomatis:
+1. Pastikan database lokal/Laragon aktif.
+2. Jalankan perintah berikut di terminal:
+   ```bash
+   npx playwright test
+   ```
+
