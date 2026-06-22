@@ -130,11 +130,11 @@ Buka peramban (browser) Anda dan akses alamat `http://localhost:3000`.
 
 Berdasarkan inisialisasi script `seed_data.js`, Anda dapat masuk ke sistem menggunakan akun uji coba berikut:
 
-* **Akun Dosen (Akses 6 Card & 6 Tab Lengkap):**
+* **Akun Dosen:**
   * **Email/Username:** `larisa@mail.com`
   * **Password:** `password123`
 
-* **Akun Tenaga Kependidikan / Tendik (Hanya 3 Card & 3 Tab):**
+* **Akun Tenaga Kependidikan / Tendik):**
   * **Email/Username:** `budi@mail.com`
   * **Password:** `password123`
 
